@@ -1,0 +1,19 @@
+.playground {
+  $button_size: 6vw;
+  $button_margin: .05 * $button_size;
+  $button_count: 9;
+
+  margin: 0 auto;
+  width: ($button_size + 2 * $button_margin) * $button_count;
+
+
+  .button {
+    display: inline-block;
+    width: $button_size;
+    height: $button_size;
+    margin: $button_margin;
+
+    border: 1px dotted gray;
+    border-radius: 10%;
+  }
+}
