@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "rm -fr dist > /dev/null && parcel  -p 9000 index.html",
+    "prod": "rm -fr dist > /dev/null && parcel build --no-cache --no-source-maps index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
