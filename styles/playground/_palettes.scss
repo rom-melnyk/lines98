@@ -1,0 +1,27 @@
+@use "sass:list";
+
+/**
+ * @module playground
+ * @module playground.cell
+ */
+
+.playground.palette-1 {
+  $colors: #aaa, #02d, #1b1, #cb2, #e02;
+
+  @for $i from 1 through 5 {
+    .cell[ball="#{$i}"]::before,
+    .cell[intended="#{$i}"]::before {
+      background-image: radial-gradient(
+          at 30% 35%,
+          lighten(list.nth($colors, $i), 10%),
+          list.nth($colors, $i),
+          darken(list.nth($colors, $i), 10%),
+      );
+    }
+
+    .cell[trace="#{$i}"] {
+      border-color: transparent;
+      background-color: lighten(list.nth($colors, $i), 30%);
+    }
+  }
+}
