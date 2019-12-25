@@ -12,6 +12,7 @@ function init() {
     makeIntentions: () => gameplay.makeIntentions(state, playground),
     undoIntentions: () => gameplay.undoIntentions(state, playground),
     settleIntentions: () => gameplay.settleIntentions(state, playground),
+    unsetBalls: () => gameplay.unsetBalls(state, playground),
   };
 }
 

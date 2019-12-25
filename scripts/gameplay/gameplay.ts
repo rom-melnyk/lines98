@@ -32,6 +32,7 @@ export function undoIntentions(state: State, playground: Playground): void {
 
 export function settleIntentions(state: State, playground: Playground): void {
   state.lastCells = [];
+
   state.cells
     .filter((cellState) => cellState.intention)
     .forEach((cellState) => {
@@ -45,4 +46,14 @@ export function settleIntentions(state: State, playground: Playground): void {
 
       state.lastCells.push(cellState);
     });
+}
+
+export function unsetBalls(state: State, playground: Playground): void {
+  state.lastCells.forEach((cellState) => {
+    const cell = playground.getCellAt(cellState.x, cellState.y);
+    cellState.ball = null;
+    cell.set('ball', null);
+  });
+
+  state.lastCells = [];
 }
