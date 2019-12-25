@@ -1,15 +1,9 @@
-function init() {
-  const playgroundEl: HTMLDivElement = document.querySelector('.playground');
-  playgroundEl.classList.add('palette-1');
+import { Playground } from './playground';
+import { State } from './gameplay/state';
 
-  const fieldSize = 9;
-  for (let x = 0; x < fieldSize; x++) {
-    for (let y = 0; y < fieldSize; y++) {
-      const buttonEl = document.createElement('div');
-      buttonEl.className = 'cell';
-      playgroundEl.appendChild(buttonEl);
-    }
-  }
+function init() {
+  const playground = new Playground();
+  const state = new State();
 }
 
 window.addEventListener('load', init);
