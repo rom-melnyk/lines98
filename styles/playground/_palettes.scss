@@ -10,7 +10,7 @@
 
   @for $i from 1 through 5 {
     .cell[ball="#{$i}"]::before,
-    .cell[intended="#{$i}"]::before {
+    .cell[intention="#{$i}"]::before {
       background-image: radial-gradient(
           at 30% 35%,
           lighten(list.nth($colors, $i), 10%),

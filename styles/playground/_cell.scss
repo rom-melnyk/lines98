@@ -13,11 +13,9 @@
   display: inline-block;
   width: $button_size;
   height: $button_size;
-  margin: .05 * $button_size;
-  //position: relative;
+  margin: $button_margin;
 
   border-radius: 10%;
-  cursor: pointer;
 
   border: 1px dotted $border_color;
   background-color: transparent;
@@ -47,6 +45,10 @@
   }
 
   // ------ Ball ------
+  &[ball] {
+    cursor: pointer;
+  }
+
   &[ball]::before {
     transform: scale($ball-size);
   }
@@ -63,7 +65,7 @@
   }
 
   // ------ Intention ------
-  &[intended]::before {
-    transform: scale($ball-size);
+  &[intention]::before {
+    transform: scale($intention-ball-size);
   }
 }
