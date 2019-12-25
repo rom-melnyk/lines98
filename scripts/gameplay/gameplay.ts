@@ -1,7 +1,7 @@
 import * as constants from '../constants';
-import { State, } from './state';
 import { random, getRandomElement } from './utils';
 
+import { State, } from './state';
 import { Playground } from '../playground';
 
 export function makeIntentions(state: State, playground: Playground): void {
