@@ -9,19 +9,21 @@
   $colors: #aaa, #02d, #1b1, #cb2, #e02;
 
   @for $i from 1 through 5 {
+    $color: list.nth($colors, $i);
+
     .cell[ball="#{$i}"]::before,
     .cell[intention="#{$i}"]::before {
       background-image: radial-gradient(
-          at 30% 35%,
-          lighten(list.nth($colors, $i), 10%),
-          list.nth($colors, $i),
-          darken(list.nth($colors, $i), 10%),
+        ellipse at 35% 35%,
+        lighten($color, 30%) 0%,
+        $color 50%,
+        darken($color, 20%) 100%,
       );
     }
 
     .cell[trace="#{$i}"] {
       border-color: transparent;
-      background-color: lighten(list.nth($colors, $i), 30%);
+      background-color: lighten($color, 30%);
     }
   }
 }
