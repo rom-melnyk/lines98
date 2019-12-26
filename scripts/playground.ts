@@ -3,7 +3,7 @@ import * as utils from './gameplay/utils';
 import { Cell } from './cell';
 
 export class Playground {
-  private readonly cells: Cell[] = [];
+  public readonly cells: Cell[] = [];
   private palette: number = 1;
   private htmlElement: HTMLDivElement;
 
