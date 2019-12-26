@@ -1,5 +1,4 @@
 import * as constants from './constants';
-import * as utils from './gameplay/utils';
 import { Cell } from './cell';
 
 export class Playground {
@@ -18,10 +17,6 @@ export class Playground {
         this.htmlElement.appendChild(cell.getHtmlElement());
       }
     }
-  }
-
-  public getCellAt(x: number, y: number): Cell {
-    return utils.getAt<Cell>(this.cells, x, y);
   }
 
   public setPalette(palette: number): void {

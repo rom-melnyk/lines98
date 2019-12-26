@@ -1,5 +1,6 @@
 import * as constants from '../constants';
-import { random, getRandomElement } from './utils';
+import { random, getRandomElement, getAt } from './utils';
+import { clickOnBall, clickOnEmptyOrIntendedCell } from './handlers/mouse-click';
 
 import { State } from './state';
 import { Playground } from '../playground';
@@ -9,7 +10,11 @@ export class Gameplay {
   constructor(
     public state: State,
     public playground: Playground,
-  ) {}
+  ) {
+    this.playground.cells.forEach((cell) => {
+      cell.getHtmlElement().addEventListener('click', this.createClickHandler(cell));
+    })
+  }
 
   public makeIntentions(): void {
     const availableCells = this.playground.cells.filter((cell) => !cell.get('ball'));
@@ -50,11 +55,20 @@ export class Gameplay {
 
   public undoSettleIntention(): void {
     this.state.lastSettled.forEach((cellState) => {
-      const cell = this.playground.getCellAt(cellState.x, cellState.y);
+      const cell = getAt<Cell>(this.playground.cells, cellState.x, cellState.y);
       cell.set('ball', null);
     });
 
     this.state.lastSettled = [];
   }
 
+  public createClickHandler(cell: Cell) {
+    return () => {
+      if (cell.get('ball')) {
+        clickOnBall(cell, this.state);
+      } else {
+        clickOnEmptyOrIntendedCell(cell, this.playground.cells, this.state);
+      }
+    };
+  }
 }

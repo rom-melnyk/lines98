@@ -15,7 +15,6 @@ export class Cell {
   ) {
     this.htmlElement = document.createElement('div');
     this.htmlElement.className = 'cell';
-    this.htmlElement.addEventListener('click', this.handleClick.bind(this));
   }
 
   public getHtmlElement() {
@@ -34,13 +33,5 @@ export class Cell {
     }
 
     this.properties[property] = value;
-  }
-
-  private handleClick() {
-    if (!this.properties.ball) {
-      return;
-    }
-
-    this.set('selected', this.properties.selected ? null : 1);
   }
 }
