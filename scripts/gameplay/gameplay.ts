@@ -1,5 +1,5 @@
 import * as constants from '../constants';
-import { random, getRandomElement } from './utils';
+import { random, getRandomElement, getAt } from './utils';
 import { clickOnBall, clickOnEmptyOrIntendedCell } from './handlers/mouse-click';
 import { mouseOverCell } from './handlers/mouse-hover';
 
@@ -18,6 +18,10 @@ export class Gameplay {
       cell.getHtmlElement().addEventListener('mouseover', () => mouseOverCell(cell, this.playground.cells, this.state));
       cell.getHtmlElement().addEventListener('mouseout', () => clearTrace(this.state));
     })
+  }
+
+  private getSelectedCell(): Cell {
+    return getAt(this.playground.cells, this.state.selected.x, this.state.selected.y);
   }
 
   public makeIntentions(): void {
@@ -63,7 +67,7 @@ export class Gameplay {
       if (cell.get('ball')) {
         clickOnBall(cell, this.state);
       } else {
-        clickOnEmptyOrIntendedCell(cell, this.playground.cells, this.state);
+        clickOnEmptyOrIntendedCell(cell, this.getSelectedCell(), this.state);
       }
     };
   }

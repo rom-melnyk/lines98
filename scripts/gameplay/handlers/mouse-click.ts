@@ -1,6 +1,5 @@
 import { Cell } from '../../cell';
 import { State } from '../state';
-import { getAt } from '../utils';
 import { clearTrace } from './trace-utils';
 
 function unselectCell(cell: Cell, state: State) {
@@ -29,14 +28,12 @@ function moveBall(fromCell: Cell, toCell: Cell) {
   fromCell.set('ball', null);
 }
 
-export function clickOnEmptyOrIntendedCell(cell: Cell, allCells: Cell[], state: State) {
+export function clickOnEmptyOrIntendedCell(currentCell: Cell, selectedCell: Cell, state: State) {
   if (!state.selected || !state.trace) {
     return;
   }
 
-  const selectedCell = getAt(allCells, state.selected.x, state.selected.y);
-
-  moveBall(selectedCell, cell);
+  moveBall(selectedCell, currentCell);
   unselectCell(selectedCell, state);
   clearTrace(state);
 
