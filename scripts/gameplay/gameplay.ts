@@ -1,11 +1,12 @@
 import * as constants from '../constants';
-import { random, getRandomElement, getAt } from './utils';
+import { random, getRandomElement } from './utils';
 import { clickOnBall, clickOnEmptyOrIntendedCell } from './handlers/mouse-click';
-import { mouseOverCell, mouseOutCell } from './handlers/mouse-hover';
+import { mouseOverCell } from './handlers/mouse-hover';
 
 import { State } from './state';
 import { Playground } from '../playground';
 import { Cell } from '../cell';
+import { clearTrace } from './handlers/trace-utils';
 
 export class Gameplay {
   constructor(
@@ -15,7 +16,7 @@ export class Gameplay {
     this.playground.cells.forEach((cell) => {
       cell.getHtmlElement().addEventListener('click', this.createClickHandler(cell));
       cell.getHtmlElement().addEventListener('mouseover', () => mouseOverCell(cell, this.playground.cells, this.state));
-      cell.getHtmlElement().addEventListener('mouseout', () => mouseOutCell(this.playground.cells, this.state));
+      cell.getHtmlElement().addEventListener('mouseout', () => clearTrace(this.state));
     })
   }
 
@@ -43,25 +44,17 @@ export class Gameplay {
   }
 
   public settleIntentions(): void {
-    this.state.lastSettled = [];
-
-    this.playground.cells
-      .filter((cell) => cell.get('intention'))
+    this.state.lastSettled = this.playground.cells.filter((cell) => cell.get('intention'));
+    this.state.lastSettled
       .forEach((cell) => {
         const ball = cell.get('intention');
         cell.set('ball', ball);
         cell.set('intention', null);
-
-        this.state.lastSettled.push({ x: cell.x, y: cell.y });
       });
   }
 
   public undoSettleIntention(): void {
-    this.state.lastSettled.forEach((cellState) => {
-      const cell = getAt<Cell>(this.playground.cells, cellState.x, cellState.y);
-      cell.set('ball', null);
-    });
-
+    this.state.lastSettled.forEach((cell) => cell.set('ball', null));
     this.state.lastSettled = [];
   }
 

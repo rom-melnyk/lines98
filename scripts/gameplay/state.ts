@@ -1,13 +1,11 @@
-interface Position {
-  x: number;
-  y: number;
-}
+import { Cell } from '../cell';
 
 export class State {
-  public selected: Position = null;
-  public trace: Position[] = [];
-  public lastSettled: Position[] = [];
-  public lastWiped: Array<Position & { ball: number }> = [];
+  public selected: Cell = null;
+  public trace: Cell[] = [];
+  public lastSettled: Cell[] = [];
+  public lastWipedCells: Cell[] = [];
+  public lastWipedColor: number = null;
   public score = 0;
 
   constructor() {}

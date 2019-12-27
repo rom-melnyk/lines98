@@ -1,7 +1,7 @@
 import { getAt } from '../utils';
 import { Cell } from '../../cell';
 import { State } from '../state';
-import { drawTrace } from './utils';
+import { clearTrace, drawTrace } from './trace-utils';
 
 function getDistanceBetween(cellA: Cell, cellB: Cell): number {
   const dx = cellA.x - cellB.x;
@@ -56,16 +56,10 @@ export function mouseOverCell(cell: Cell, allCells: Cell[], state: State) {
     return;
   }
 
-  drawTrace(allCells, state, null);
-  state.trace = [];
+  clearTrace(state);
 
   const selectedCell = getAt(allCells, state.selected.x, state.selected.y);
   state.trace = findShortPath(selectedCell, cell, allCells);
 
-  drawTrace(allCells, state, selectedCell.get('ball'));
-}
-
-export function mouseOutCell(allCells: Cell[], state: State) {
-  drawTrace(allCells, state, null);
-  state.trace = [];
+  drawTrace(state, selectedCell.get('ball'));
 }

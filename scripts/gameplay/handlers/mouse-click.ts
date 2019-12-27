@@ -1,7 +1,7 @@
 import { Cell } from '../../cell';
 import { State } from '../state';
 import { getAt } from '../utils';
-import { drawTrace } from './utils';
+import { clearTrace } from './trace-utils';
 
 function unselectCell(cell: Cell, state: State) {
   cell.set('selected', null);
@@ -10,21 +10,21 @@ function unselectCell(cell: Cell, state: State) {
 
 function selectCell(cell: Cell, state: State) {
   cell.set('selected', 1);
-  state.selected = { x: cell.x, y: cell.y };
+  state.selected = cell;
 }
 
 export function clickOnBall(cell: Cell, state: State) {
   if (cell.get('selected')) {
     unselectCell(cell, state);
   } else {
-    // if (state.selected) {
-    //   unselectCell()
-    // }
+    if (state.selected) {
+      unselectCell(state.selected, state);
+    }
     selectCell(cell, state);
   }
 }
 
-function moveBall(fromCell: Cell, toCell: Cell, state: State) {
+function moveBall(fromCell: Cell, toCell: Cell) {
   toCell.set('ball', fromCell.get('ball'));
   fromCell.set('ball', null);
 }
@@ -36,8 +36,9 @@ export function clickOnEmptyOrIntendedCell(cell: Cell, allCells: Cell[], state: 
 
   const selectedCell = getAt(allCells, state.selected.x, state.selected.y);
 
-  moveBall(selectedCell, cell, state);
+  moveBall(selectedCell, cell);
   unselectCell(selectedCell, state);
-  drawTrace(allCells, state, null);
+  clearTrace(state);
+
   // TODO Add `wipe()` logic.
 }
