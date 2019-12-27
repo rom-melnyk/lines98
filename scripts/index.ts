@@ -10,6 +10,10 @@ function init() {
 
   // TODO remove after debugging.
   (window as any).L98 = gameplay;
+  gameplay.makeIntentions();
+  gameplay.makeIntentions();
+  gameplay.makeIntentions();
+  gameplay.settleIntentions();
 }
 
 window.addEventListener('load', init);
