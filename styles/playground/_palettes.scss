@@ -6,7 +6,12 @@
  */
 
 .playground.palette-1 {
-  $colors: #aaa, #02d, #1b1, #cb2, #e02;
+  $colors:
+    hsl(040, 80%, 60%),
+    hsl(130, 80%, 60%),
+    hsl(200, 80%, 60%),
+    hsl(260, 80%, 60%),
+    hsl(340, 80%, 60%);
 
   @for $i from 1 through 5 {
     $color: list.nth($colors, $i);
@@ -16,13 +21,13 @@
       background-image: radial-gradient(
         ellipse at 35% 35%,
         lighten($color, 30%) 0%,
-        $color 50%,
+        $color 30%,
         darken($color, 20%) 100%,
       );
     }
 
     .cell[trace="#{$i}"] {
-      border-color: transparent;
+      border-color: lighten($color, 30%);
       background-color: lighten($color, 30%);
     }
   }
