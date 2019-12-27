@@ -8,12 +8,17 @@ function init() {
   const playground = new Playground();
   const gameplay = new Gameplay(state, playground);
 
-  // TODO remove after debugging.
-  (window as any).L98 = gameplay;
-  gameplay.makeIntentions();
-  gameplay.makeIntentions();
+  window.addEventListener('keypress', (e) => {
+    if (e.ctrlKey && (e.key === 'z' || e.key === 'Z')) {
+      gameplay.undoSettleIntention();
+      gameplay.undoIntentions();
+      gameplay.makeIntentions();
+    }
+  });
+
   gameplay.makeIntentions();
   gameplay.settleIntentions();
+  gameplay.makeIntentions();
 }
 
 window.addEventListener('load', init);
