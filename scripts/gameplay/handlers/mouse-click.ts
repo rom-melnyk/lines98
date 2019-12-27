@@ -1,6 +1,7 @@
 import { Cell } from '../../cell';
 import { State } from '../state';
 import { getAt } from '../utils';
+import { findShortestPath } from './mouse-hover';
 
 function unselectCell(cell: Cell, state: State) {
   cell.set('selected', null);
@@ -23,7 +24,6 @@ export function clickOnBall(cell: Cell, state: State) {
 function moveBall(fromCell: Cell, toCell: Cell, state: State) {
   toCell.set('ball', fromCell.get('ball'));
   fromCell.set('ball', null);
-  unselectCell(fromCell, state);
 }
 
 export function clickOnEmptyOrIntendedCell(cell: Cell, allCells: Cell[], state: State) {
@@ -32,6 +32,9 @@ export function clickOnEmptyOrIntendedCell(cell: Cell, allCells: Cell[], state: 
   }
 
   const selectedCell = getAt(allCells, state.selected.x, state.selected.y);
+  const shortestPath = findShortestPath(selectedCell, cell, allCells);
+
   moveBall(selectedCell, cell, state);
+  unselectCell(selectedCell, state);
   // TODO Add `wipe()` logic.
 }
