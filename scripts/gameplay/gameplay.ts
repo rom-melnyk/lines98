@@ -1,6 +1,7 @@
 import * as constants from '../constants';
 import { random, getRandomElement, getAt } from './utils';
 import { clickOnBall, clickOnEmptyOrIntendedCell } from './handlers/mouse-click';
+import { mouseOverCell, mouseOutCell } from './handlers/mouse-hover';
 
 import { State } from './state';
 import { Playground } from '../playground';
@@ -13,6 +14,8 @@ export class Gameplay {
   ) {
     this.playground.cells.forEach((cell) => {
       cell.getHtmlElement().addEventListener('click', this.createClickHandler(cell));
+      cell.getHtmlElement().addEventListener('mouseover', () => mouseOverCell(cell, this.playground.cells, this.state));
+      cell.getHtmlElement().addEventListener('mouseout', () => mouseOutCell(this.playground.cells, this.state));
     })
   }
 

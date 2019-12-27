@@ -5,7 +5,7 @@ interface Position {
 
 export class State {
   public selected: Position = null;
-  public destination: Position = null;
+  public trace: Position[] = [];
   public lastSettled: Position[] = [];
   public lastWiped: Array<Position & { ball: number }> = [];
   public score = 0;
