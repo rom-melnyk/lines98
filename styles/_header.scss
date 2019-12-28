@@ -1,0 +1,15 @@
+@import "config";
+
+header.stats-panel {
+  margin-bottom: 2rem;
+  padding: 2rem 0;
+
+  .score {
+    float: right;
+    text-align: right;
+    font-family: monospace;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: $cell-border-color;
+  }
+}

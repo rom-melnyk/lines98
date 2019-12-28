@@ -10,6 +10,11 @@ export class Runtime {
   public lastBallMove: [Cell, Cell] /* from, to */ = null;
   public score = 0;
 
+  private readonly scoreElement: HTMLSpanElement;
+  constructor() {
+    this.scoreElement = document.querySelector('.stats-panel .score');
+  }
+
   public updateScore(cellsWiped: number) {
     const increment = 1;
     const sign = Math.sign(cellsWiped);
@@ -21,5 +26,9 @@ export class Runtime {
       this.score += sign * perHopIncrement;
       cellsWiped--;
     }
+
+    let score = this.score.toString(10);
+    score = Array(5 - score.length).fill('0').join('') + score;
+    this.scoreElement.innerText = score;
   }
 }

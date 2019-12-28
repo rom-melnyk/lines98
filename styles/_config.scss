@@ -1,6 +1,9 @@
-$button_size: 6vmin;
-$button_margin: .05 * $button_size;
-$button_count: 9;
+$cell-size: 7vmin;
+$cell-margin: .05 * $cell-size;
+$cell-count: 9;
+$playground-width: ($cell-size + 2 * $cell-margin) * $cell-count;
+
+$cell-border-color: #bbb;
 
 $ball-size: .9;
 $intention-ball-size: .2;

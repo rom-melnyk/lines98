@@ -4,6 +4,6 @@
 
 .playground {
   margin: 0 auto;
-  width: ($button_size + 2 * $button_margin) * $button_count;
+  width: $playground-width;
   line-height: 0;
 }

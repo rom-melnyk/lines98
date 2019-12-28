@@ -13,6 +13,7 @@ export function loadGame(allCells: Cell[], runtime: Runtime): boolean {
   try {
     const { score, cells } = JSON.parse(localStorage.getItem(localStorageKey)) as Save;
     runtime.score = score;
+    runtime.updateScore(0);
     cells.forEach((serialized) => {
       const { x, y, ball, intention } = Cell.fromSerialized(serialized);
       const cell = getAt(allCells, x, y);

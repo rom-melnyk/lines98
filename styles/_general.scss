@@ -1,3 +1,5 @@
+@import "config";
+
 * {
   box-sizing: border-box;
 }
@@ -13,4 +15,16 @@ html, body {
 body {
   font-family: sans-serif;
   font-size: 18px;
+}
+
+.float-container {
+  width: $playground-width;
+  margin: 0 auto;
+
+  &:after {
+    content: "";
+    display: block;
+    height: 0;
+    clear: both;
+  }
 }
