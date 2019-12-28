@@ -2,7 +2,7 @@ import { Cell } from '../../cell';
 import { Runtime } from '../runtime';
 import { Fsm } from '../fsm/fsm';
 import { FsmNames } from '../fsm/names';
-import { unselectCell, selectCell, moveBall, findCellsToWipe, wipeCells, clearWipedState } from '../operations/ball-operations';
+import { unselectCell, selectCell, moveBall, findCellsToWipe, wipeCells, clearWipedFlag } from '../operations/ball-operations';
 import { clearTrace } from '../trace-utils';
 
 export function clickOnBall(cell: Cell, runtime: Runtime, fsm: Fsm) {
@@ -32,7 +32,7 @@ export function clickOnEmptyOrIntendedCell(currentCell: Cell, allCells: Cell[], 
     wipeCells(cellsToWipe, runtime);
     fsm.goTo(FsmNames.NOTHING_SELECTED);
   } else {
-    clearWipedState(runtime);
+    clearWipedFlag(runtime);
     fsm.goTo(FsmNames.NO_LINES_ON_BOARD);
   }
 }

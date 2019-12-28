@@ -3,7 +3,7 @@ import { random, getRandomElement } from '../playground-utils';
 import { Cell } from '../../cell';
 import { FsmNames } from '../fsm/names';
 import { Runtime } from '../runtime';
-import { findCellsToWipe, wipeCells, clearWipedState } from '../operations/ball-operations';
+import { findCellsToWipe, wipeCells, clearWipedFlag } from '../operations/ball-operations';
 import { saveGame } from '../operations/load-save-operations';
 
 /**
@@ -64,7 +64,7 @@ export function settleIntentions(allCells: Cell[], runtime: Runtime) {
   if (cellsToWipe.length > 0) {
     wipeCells(cellsToWipe, runtime);
   } else {
-    clearWipedState(runtime);
+    clearWipedFlag(runtime);
   }
 
   return FsmNames.INTENTIONS_SETTLED;
