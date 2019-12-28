@@ -1,74 +1,80 @@
-import * as constants from '../constants';
-import { random, getRandomElement, getAt } from './utils';
-import { clickOnBall, clickOnEmptyOrIntendedCell } from './handlers/mouse-click';
-import { mouseOverCell } from './handlers/mouse-hover';
-
 import { State } from './state';
 import { Playground } from '../playground';
 import { Cell } from '../cell';
-import { clearTrace } from './handlers/trace-utils';
+
+import { Fsm } from './fsm/fsm';
+import { FsmNames } from './fsm/names';
+
+import { makeIntentions, separateIntentionsFromBalls, settleIntentions, } from './actions/intention-actions';
+import { clickOnBall, clickOnEmptyOrIntendedCell } from './actions/ball-actions';
+import { undoSettleIntention, undoIntentions } from './actions/intention-utils';
+import { clearTrace, drawTrace, findShortestPath } from './trace-utils';
+import { moveBall } from './actions/ball-utils';
 
 export class Gameplay {
+  private readonly fsm: Fsm;
+
   constructor(
     public state: State,
     public playground: Playground,
   ) {
+    this.fsm = new Fsm();
+
     this.playground.cells.forEach((cell) => {
-      cell.getHtmlElement().addEventListener('click', this.createClickHandler(cell));
-      cell.getHtmlElement().addEventListener('mouseover', () => mouseOverCell(cell, this.playground.cells, this.state));
+      cell.getHtmlElement().addEventListener('click', this.createMouseClickHandler(cell));
+      cell.getHtmlElement().addEventListener('mouseover', this.createMouseOverHandler(cell));
       cell.getHtmlElement().addEventListener('mouseout', () => clearTrace(this.state));
-    })
+    });
+
+    window.addEventListener('keypress', this.createCtrlZHandler());
+
+    this.fsm.add(FsmNames.GAME_OVER, {});
+    this.fsm.add(FsmNames.NOTHING_SELECTED, {});
+    this.fsm.add(FsmNames.BALL_SELECTED, {});
+    this.fsm.add(FsmNames.NO_LINES_ON_BOARD, { transition: FsmNames.SEPARATE_INTENTIONS_FROM_BALLS });
+    this.fsm.add(FsmNames.INTENTIONS_READY_TO_SETTLE, { transition: FsmNames.SETTLE_INTENTIONS });
+    this.fsm.add(FsmNames.INTENTIONS_SETTLED, { transition: FsmNames.MAKE_INTENTIONS });
+
+    this.fsm.add(FsmNames.MAKE_INTENTIONS, () => makeIntentions(this.playground.cells));
+    this.fsm.add(FsmNames.SEPARATE_INTENTIONS_FROM_BALLS, () => separateIntentionsFromBalls(this.playground.cells));
+    this.fsm.add(FsmNames.SETTLE_INTENTIONS, () => settleIntentions(this.playground.cells, this.state));
   }
 
-  private getSelectedCell(): Cell {
-    return getAt(this.playground.cells, this.state.selected.x, this.state.selected.y);
+  public init() {
+    this.fsm.goTo(FsmNames.MAKE_INTENTIONS);
+    this.fsm.goTo(FsmNames.SETTLE_INTENTIONS);
   }
 
-  public makeIntentions(): void {
-    const availableCells = this.playground.cells.filter((cell) => !cell.get('ball'));
-    if (availableCells.length < constants.ballsPerIntention) {
-      throw new constants.GameOver();
-    }
-
-    for (let i = 0; i < constants.ballsPerIntention; i++) {
-      const index = random(availableCells.length);
-      const cell = availableCells.splice(index, 1)[0]; // Splice from array and pick it.
-      const intention = getRandomElement<number>(constants.colors);
-
-      cell.set('intention', intention);
-    }
-  }
-
-  public undoIntentions(): void {
-    this.playground.cells
-      .filter((cell) => cell.get('intention'))
-      .forEach((cell) => {
-        cell.set('intention', null);
-      });
-  }
-
-  public settleIntentions(): void {
-    this.state.lastSettled = this.playground.cells.filter((cell) => cell.get('intention'));
-    this.state.lastSettled
-      .forEach((cell) => {
-        const ball = cell.get('intention');
-        cell.set('ball', ball);
-        cell.set('intention', null);
-      });
-  }
-
-  public undoSettleIntention(): void {
-    this.state.lastSettled.forEach((cell) => cell.set('ball', null));
-    this.state.lastSettled = [];
-  }
-
-  public createClickHandler(cell: Cell) {
+  private createMouseClickHandler(cell: Cell) {
     return () => {
       if (cell.get('ball')) {
-        clickOnBall(cell, this.state);
+        clickOnBall(cell, this.state, this.fsm);
       } else {
-        clickOnEmptyOrIntendedCell(cell, this.getSelectedCell(), this.state);
+        clickOnEmptyOrIntendedCell(cell, this.playground.cells, this.state, this.fsm);
       }
     };
+  }
+
+  private createMouseOverHandler(cell: Cell) {
+    return () => {
+      if (!this.state.selected) {
+        return;
+      }
+
+      clearTrace(this.state);
+      this.state.trace = findShortestPath(this.state.selected, cell, this.playground.cells);
+      drawTrace(this.state, this.state.selected.get('ball'));
+    };
+  }
+
+  private createCtrlZHandler() {
+    return (e: KeyboardEvent) => {
+      if (e.ctrlKey && (e.key === 'z' || e.key === 'Z')) {
+        undoIntentions(this.playground.cells);
+        undoSettleIntention(this.state);
+        moveBall(this.state.lastBallMove[1], this.state.lastBallMove[0], this.state);
+        this.fsm.goTo(FsmNames.MAKE_INTENTIONS);
+      }
+    }
   }
 }
