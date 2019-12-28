@@ -9,4 +9,4 @@ export enum FsmNames {
   UNDO = 'undo',
   SEPARATE_INTENTIONS_FROM_BALLS = 'separate_intentions_from_balls',
   SETTLE_INTENTIONS = 'settle_intentions',
-};
+}
