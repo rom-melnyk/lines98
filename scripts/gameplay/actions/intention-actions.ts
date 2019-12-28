@@ -6,6 +6,10 @@ import { Runtime } from '../runtime';
 import { findCellsToWipe, wipeCells, clearWipedState } from '../operations/ball-operations';
 import { saveGame } from '../operations/load-save-operations';
 
+/**
+ * @action
+ * @return {FsmNames.GAME_OVER | FsmNames.NOTHING_SELECTED}
+ */
 export function makeIntentions(allCells: Cell[], runtime: Runtime) {
   const availableCells = allCells.filter((cell) => !cell.get('ball'));
   if (availableCells.length < constants.ballsPerIntention) {
@@ -24,6 +28,10 @@ export function makeIntentions(allCells: Cell[], runtime: Runtime) {
   return FsmNames.NOTHING_SELECTED;
 }
 
+/**
+ * @action
+ * @return {FsmNames.GAME_OVER | FsmNames.INTENTIONS_READY_TO_SETTLE}
+ */
 export function separateIntentionsFromBalls(allCells: Cell[]) {
   const intentionsOverBalls = allCells.filter((cell) => cell.get('ball') && cell.get('intention'));
   const availableCells = allCells.filter((cell) => !cell.get('ball') && !cell.get('intention'));
@@ -41,6 +49,10 @@ export function separateIntentionsFromBalls(allCells: Cell[]) {
   return FsmNames.INTENTIONS_READY_TO_SETTLE;
 }
 
+/**
+ * @action
+ * @return {FsmNames.INTENTIONS_SETTLED}
+ */
 export function settleIntentions(allCells: Cell[], runtime: Runtime) {
   runtime.lastSettled = allCells.filter((cell) => cell.get('intention'));
   runtime.lastSettled.forEach((cell) => {

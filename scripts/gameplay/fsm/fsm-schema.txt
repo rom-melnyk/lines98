@@ -1,4 +1,4 @@
-Legend:
+LEGEND
 
 || state ||         State.
                     Can be "stable" (awaiting action from the outside e.g., mouse click to continue)
@@ -6,6 +6,30 @@ Legend:
 // action //        Procedures that can change state.
 << condition >>     Think "guards" or semaphores that make decision where to go further.
 
+Bear in mind that all the state, actions and conditions are FSM entities:
+- actions and conditions are functions with 1+ exit points leading to next FSM entity;
+- states are functions
+  - either leading to next FSM entity (transitional state),
+  - or returning nothing (stable states).
+
+
+
+IMPLEMENTATION
+
+Conditions are often included in following action, e.g.,
+```
+function makeIntention() {
+  if (areThereThreeFreeCells?) {
+    // perform "make intentions" routine;
+    return FsmNames.NOTHING_SELECTED;
+  } else {
+    return FsmNames.GAME_OVER;
+  }
+}
+```
+
+
+SCHEMA
 
  1. << Are there 3 free (no ball; no intention) cells for intention? >>
        a) No --> GO_TO_[game_over].
@@ -30,7 +54,7 @@ Legend:
        Don't clear the "intention" flag if any!
        Store previous position in state/history (see [3c]).
  7. << Are there full lines on the board? >>
-       a) Yes --> // Perform wipe //; GO_TO_[3].
+       a) Yes --> // Wipe full lines // --> GO_TO_[3].
        b) No: GO_TO_[8]
  8. || Transitional state: there are no lines on the board. ||
  9. << Is there as ball upon intention? >>
@@ -43,9 +67,9 @@ Legend:
 10. || Transitional state: there are intentions separate from balls. ||
 11. // Settle intentions. //
 12. << Are there full lines on the board? See [7]. >>
-       a) Yes? --> // Perform wipe //; GO_TO_[13].
+       a) Yes? --> // Wipe full lines // --> GO_TO_[13].
           - GO_TO_[13].
        b) No --> GO_TO_[13].
 13. || Transitional state: all intentions settled to balls; no lines on the board. ||
 14. // GO_TO_[1] //
-15. || Game over: occurs upon referring to. ||
+XX. || Game over: occurs upon referring to. ||

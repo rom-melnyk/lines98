@@ -29,12 +29,12 @@ export class Gameplay {
 
     window.addEventListener('keypress', this.createKeypressHandler());
 
-    this.fsm.add(FsmNames.GAME_OVER, {});
-    this.fsm.add(FsmNames.NOTHING_SELECTED, {});
-    this.fsm.add(FsmNames.BALL_SELECTED, {});
-    this.fsm.add(FsmNames.NO_LINES_ON_BOARD, { transition: FsmNames.SEPARATE_INTENTIONS_FROM_BALLS });
-    this.fsm.add(FsmNames.INTENTIONS_READY_TO_SETTLE, { transition: FsmNames.SETTLE_INTENTIONS });
-    this.fsm.add(FsmNames.INTENTIONS_SETTLED, { transition: FsmNames.MAKE_INTENTIONS });
+    this.fsm.add(FsmNames.GAME_OVER, () => null);
+    this.fsm.add(FsmNames.NOTHING_SELECTED, () => null);
+    this.fsm.add(FsmNames.BALL_SELECTED, () => null);
+    this.fsm.add(FsmNames.NO_LINES_ON_BOARD, () => FsmNames.SEPARATE_INTENTIONS_FROM_BALLS);
+    this.fsm.add(FsmNames.INTENTIONS_READY_TO_SETTLE, () => FsmNames.SETTLE_INTENTIONS);
+    this.fsm.add(FsmNames.INTENTIONS_SETTLED, () => FsmNames.MAKE_INTENTIONS);
 
     this.fsm.add(FsmNames.MAKE_INTENTIONS, () => makeIntentions(this.playground.cells, this.runtime));
     this.fsm.add(FsmNames.SEPARATE_INTENTIONS_FROM_BALLS, () => separateIntentionsFromBalls(this.playground.cells));

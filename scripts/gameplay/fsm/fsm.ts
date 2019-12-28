@@ -1,44 +1,52 @@
 import { FsmNames } from './names';
 
-interface FsmState {
-  transition?: FsmEntity | FsmNames;
-}
+type FsmState = () => FsmState | FsmNames;
 
-type FsmAction = () => FsmEntity | FsmNames;
-
-type FsmCondition = FsmAction; // Like FsmAction but has multiple return points.
-
-type FsmEntity = FsmState | FsmAction | FsmCondition;
-
+/**
+ * Finite state machine implementation.
+ * Each state is a function doing something and returning one of following:
+ *   - next state,
+ *   - next state name,
+ *   - nothing (it means the "stable state" awaiting actions from the outer world).
+ */
 export class Fsm {
-  private fsmEntities: Map<FsmNames, FsmEntity> = new Map();
+  private states: Map<FsmNames, FsmState> = new Map();
 
-  public add(name: FsmNames, stateOrActionOrCondition: FsmEntity) {
+  constructor(
+    private debug = false,
+  ) {}
+
+  public add(name: FsmNames, state: FsmState) {
     if (!name) {
       throw new Error(`Cannot add nameless FSM entity.`);
     }
 
-    if (this.fsmEntities.get(name)) {
+    if (this.states.get(name)) {
       throw new Error(`FSM entity "${name}" already exists.`)
     }
 
-    this.fsmEntities.set(name, stateOrActionOrCondition);
+    this.states.set(name, state);
   }
 
-  public goTo(stateOrActionOrCondition: FsmEntity | FsmNames) {
-    const entityToGo: FsmEntity = typeof stateOrActionOrCondition === 'string'
-      ? this.fsmEntities.get(stateOrActionOrCondition)
-      : stateOrActionOrCondition;
-    if (!entityToGo) {
-      throw new Error(`FSM entity not found: "${stateOrActionOrCondition}"`);
+  public goTo(state: FsmState | FsmNames) {
+    const stateToGo: FsmState = typeof state === 'string' ? this.states.get(state) : state;
+
+    if (!stateToGo) {
+      if (this.debug) {
+        console.info('FSM: stable state; awaiting actions from outer world.');
+      }
+      return;
     }
 
-    if (typeof entityToGo === 'function') { // Action or Condition?
-      this.goTo(entityToGo());
-    } else if (entityToGo.transition) { // Transitional state?
-      this.goTo(entityToGo.transition);
-    } else {
-      // Stable state; do nothing.
+    if (this.debug) {
+      const nameEntry = Array.from(
+        this.states.entries()
+      ).find(([n, s]) => s === stateToGo);
+      const name = nameEntry && nameEntry[0];
+      console.info(`FSM: At state "${name}"`);
     }
+
+    // Use `setTimeout(() => this.goTo(stateToGo()), 0)` in case in Stack overflow.
+    this.goTo(stateToGo());
   }
 }
