@@ -1,7 +1,6 @@
-import { getAt } from '../utils';
-import { Cell } from '../../cell';
-import { State } from '../state';
-import { clearTrace, drawTrace } from './trace-utils';
+import { getAt } from './playground-utils';
+import { Cell } from '../cell';
+import { State } from './state';
 
 function getDistanceBetween(cellA: Cell, cellB: Cell): number {
   const dx = cellA.x - cellB.x;
@@ -9,7 +8,7 @@ function getDistanceBetween(cellA: Cell, cellB: Cell): number {
   return Math.sqrt(dx * dx + dy * dy);
 }
 
-function findDirectionsFrom(fromCell: Cell, toCell: Cell, allCells: Cell[], visitedCells: Set<Cell>): Cell[] {
+function findNeighborsOf(fromCell: Cell, toCell: Cell, allCells: Cell[], visitedCells: Set<Cell>): Cell[] {
   return [
     getAt(allCells, fromCell.x, fromCell.y + 1),
     getAt(allCells, fromCell.x, fromCell.y - 1),
@@ -23,7 +22,7 @@ function findDirectionsFrom(fromCell: Cell, toCell: Cell, allCells: Cell[], visi
   });
 }
 
-function findShortestPath(fromCell: Cell, toCell: Cell, allCells: Cell[]): Cell[] {
+export function findShortestPath(fromCell: Cell, toCell: Cell, allCells: Cell[]): Cell[] {
   const visitedCells = new Set<Cell>();
 
   const foundPaths: Map<Cell, Cell[]> = new Map();
@@ -40,7 +39,7 @@ function findShortestPath(fromCell: Cell, toCell: Cell, allCells: Cell[]): Cell[
 
     // If there is path to `toCell` and it's shorter than current one, it  does not make sense to proceed with current.
     if (!pathToFinalDestination || pathToFinalDestination.length > pathToCell.length + 1) {
-      const neighbors = findDirectionsFrom(cell, toCell, allCells, visitedCells);
+      const neighbors = findNeighborsOf(cell, toCell, allCells, visitedCells);
 
       neighbors.forEach((neighbor) => {
         const pathToNeighbor = foundPaths.get(neighbor);
@@ -75,27 +74,23 @@ function findPath(fromCell: Cell, toCell: Cell, allCells: Cell[]): Cell[] {
       return path;
     }
 
-    cell = findDirectionsFrom(cell, toCell, allCells, visitedCells)[0];
+    cell = findNeighborsOf(cell, toCell, allCells, visitedCells)[0];
 
     // If dead end detected, go back along the path until it's possible to go further.
     while (!cell && path.length > 1) {
       path.pop();
-      cell = findDirectionsFrom(path[path.length - 1], toCell, allCells, visitedCells)[0];
+      cell = findNeighborsOf(path[path.length - 1], toCell, allCells, visitedCells)[0];
     }
   }
 
   return [];
 }
 
-export function mouseOverCell(cell: Cell, allCells: Cell[], state: State) {
-  if (!state.selected) {
-    return;
-  }
+export function clearTrace(state: State) {
+  state.trace.forEach((cell) => cell.set('trace', null));
+  state.trace = [];
+}
 
-  clearTrace(state);
-
-  const selectedCell = getAt(allCells, state.selected.x, state.selected.y);
-  state.trace = findShortestPath(selectedCell, cell, allCells);
-
-  drawTrace(state, selectedCell.get('ball'));
+export function drawTrace(state: State, color: number) {
+  state.trace.forEach((cell) => cell.set('trace', color));
 }
