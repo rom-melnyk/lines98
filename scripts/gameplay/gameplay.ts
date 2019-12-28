@@ -5,22 +5,20 @@ import { Cell } from '../cell';
 import { Fsm } from './fsm/fsm';
 import { FsmNames } from './fsm/names';
 
+import { clearTrace, drawTrace, findShortestPath } from './trace-utils';
 import { makeIntentions, separateIntentionsFromBalls, settleIntentions, } from './actions/intention-actions';
 import { clickOnBall, clickOnEmptyOrIntendedCell } from './actions/ui-handlers';
 import { undoSettleIntention, undoIntentions } from './operations/intention-operations';
-import { clearTrace, drawTrace, findShortestPath } from './trace-utils';
 import { moveBall, undoWipe } from './operations/ball-operations';
 import { loadGame } from './operations/load-save-operations';
 
 export class Gameplay {
-  private readonly fsm: Fsm;
+  private readonly fsm = new Fsm();
 
   constructor(
     public runtime: Runtime,
     public playground: Playground,
   ) {
-    this.fsm = new Fsm();
-
     this.playground.cells.forEach((cell) => {
       cell.getHtmlElement().addEventListener('click', this.createMouseClickHandler(cell));
       cell.getHtmlElement().addEventListener('mouseover', this.createMouseOverHandler(cell));
@@ -30,15 +28,15 @@ export class Gameplay {
     window.addEventListener('keypress', this.createKeypressHandler());
 
     this.fsm.add(FsmNames.GAME_OVER, () => null);
+
+    this.fsm.add(FsmNames.MAKE_INTENTIONS, () => makeIntentions(this.playground.cells, this.runtime));
     this.fsm.add(FsmNames.NOTHING_SELECTED, () => null);
     this.fsm.add(FsmNames.BALL_SELECTED, () => null);
     this.fsm.add(FsmNames.NO_LINES_ON_BOARD, () => FsmNames.SEPARATE_INTENTIONS_FROM_BALLS);
-    this.fsm.add(FsmNames.INTENTIONS_READY_TO_SETTLE, () => FsmNames.SETTLE_INTENTIONS);
-    this.fsm.add(FsmNames.INTENTIONS_SETTLED, () => FsmNames.MAKE_INTENTIONS);
-
-    this.fsm.add(FsmNames.MAKE_INTENTIONS, () => makeIntentions(this.playground.cells, this.runtime));
     this.fsm.add(FsmNames.SEPARATE_INTENTIONS_FROM_BALLS, () => separateIntentionsFromBalls(this.playground.cells));
+    this.fsm.add(FsmNames.INTENTIONS_READY_TO_SETTLE, () => FsmNames.SETTLE_INTENTIONS);
     this.fsm.add(FsmNames.SETTLE_INTENTIONS, () => settleIntentions(this.playground.cells, this.runtime));
+    this.fsm.add(FsmNames.INTENTIONS_SETTLED, () => FsmNames.MAKE_INTENTIONS);
   }
 
   public init() {
