@@ -1,38 +1,38 @@
 import { Cell } from '../../cell';
-import { State } from '../state';
+import { Runtime } from '../runtime';
 import { Fsm } from '../fsm/fsm';
 import { FsmNames } from '../fsm/names';
 import { unselectCell, selectCell, moveBall, findCellsToWipe, wipeCells, clearWipedState } from './ball-utils';
 import { clearTrace } from '../trace-utils';
 
-export function clickOnBall(cell: Cell, state: State, fsm: Fsm) {
+export function clickOnBall(cell: Cell, runtime: Runtime, fsm: Fsm) {
   if (cell.get('selected')) {
-    unselectCell(cell, state);
+    unselectCell(cell, runtime);
     fsm.goTo(FsmNames.NOTHING_SELECTED);
   } else {
-    if (state.selected) {
-      unselectCell(state.selected, state);
+    if (runtime.selected) {
+      unselectCell(runtime.selected, runtime);
     }
-    selectCell(cell, state);
+    selectCell(cell, runtime);
     fsm.goTo(FsmNames.BALL_SELECTED);
   }
 }
 
-export function clickOnEmptyOrIntendedCell(currentCell: Cell, allCells: Cell[], state: State, fsm: Fsm) {
-  if (!state.selected || state.trace.length === 0) {
+export function clickOnEmptyOrIntendedCell(currentCell: Cell, allCells: Cell[], runtime: Runtime, fsm: Fsm) {
+  if (!runtime.selected || runtime.trace.length === 0) {
     return; // fsm.goTo(FsmNames.NOTHING_SELECTED);
   }
 
-  moveBall(state.selected, currentCell, state);
-  unselectCell(state.selected, state);
-  clearTrace(state);
+  moveBall(runtime.selected, currentCell, runtime);
+  unselectCell(runtime.selected, runtime);
+  clearTrace(runtime);
 
   const cellsToWipe = findCellsToWipe(allCells);
   if (cellsToWipe.length > 0) {
-    wipeCells(cellsToWipe, state);
+    wipeCells(cellsToWipe, runtime);
     fsm.goTo(FsmNames.NOTHING_SELECTED);
   } else {
-    clearWipedState(state);
+    clearWipedState(runtime);
     fsm.goTo(FsmNames.NO_LINES_ON_BOARD);
   }
 }

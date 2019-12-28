@@ -1,6 +1,6 @@
 import { Cell } from '../cell';
 
-export class State {
+export class Runtime {
   public selected: Cell = null;
   public trace: Cell[] = [];
   public lastSettled: Cell[] = [];
@@ -8,15 +8,4 @@ export class State {
   public lastWipedColor: number = null;
   public lastBallMove: [Cell, Cell] /* from, to */ = null;
   public score = 0;
-
-  constructor() {}
-
-  public serialize(): string {
-    // TODO Implement me!
-    return '';
-  }
-
-  public parse(serializedData: string): void {
-    // TODO Implement me!
-  }
 }

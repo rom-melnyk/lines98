@@ -2,7 +2,7 @@ import * as constants from '../../constants';
 import { random, getRandomElement } from '../playground-utils';
 import { Cell } from '../../cell';
 import { FsmNames } from '../fsm/names';
-import { State } from '../state';
+import { Runtime } from '../runtime';
 import { findCellsToWipe, wipeCells, clearWipedState } from './ball-utils';
 
 export function makeIntentions(allCells: Cell[]) {
@@ -39,18 +39,18 @@ export function separateIntentionsFromBalls(allCells: Cell[]) {
   return FsmNames.INTENTIONS_READY_TO_SETTLE;
 }
 
-export function settleIntentions(allCells: Cell[], state: State) {
-  state.lastSettled = allCells.filter((cell) => cell.get('intention'));
-  state.lastSettled.forEach((cell) => {
+export function settleIntentions(allCells: Cell[], runtime: Runtime) {
+  runtime.lastSettled = allCells.filter((cell) => cell.get('intention'));
+  runtime.lastSettled.forEach((cell) => {
     cell.set('ball', cell.get('intention'));
     cell.set('intention', null);
   });
 
   const cellsToWipe = findCellsToWipe(allCells);
   if (cellsToWipe.length > 0) {
-    wipeCells(cellsToWipe, state);
+    wipeCells(cellsToWipe, runtime);
   } else {
-    clearWipedState(state);
+    clearWipedState(runtime);
   }
 
   return FsmNames.INTENTIONS_SETTLED;

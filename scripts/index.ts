@@ -1,11 +1,11 @@
-import { State } from './gameplay/state';
+import { Runtime } from './gameplay/runtime';
 import { Playground } from './playground';
 import { Gameplay } from './gameplay/gameplay';
 
 function init() {
-  const state = new State();
+  const runtime = new Runtime();
   const playground = new Playground();
-  const gameplay = new Gameplay(state, playground);
+  const gameplay = new Gameplay(runtime, playground);
   gameplay.init();
 }
 

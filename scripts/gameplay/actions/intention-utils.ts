@@ -1,5 +1,5 @@
 import { Cell } from '../../cell';
-import { State } from '../state';
+import { Runtime } from '../runtime';
 
 export function undoIntentions(allCells: Cell[]): void {
   allCells
@@ -8,7 +8,7 @@ export function undoIntentions(allCells: Cell[]): void {
 }
 
 
-export function undoSettleIntention(state: State): void {
-  state.lastSettled.forEach((cell) => cell.set('ball', null));
-  state.lastSettled = [];
+export function undoSettleIntention(runtime: Runtime): void {
+  runtime.lastSettled.forEach((cell) => cell.set('ball', null));
+  runtime.lastSettled = [];
 }

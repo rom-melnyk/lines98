@@ -1,6 +1,6 @@
 import { getAt } from './playground-utils';
 import { Cell } from '../cell';
-import { State } from './state';
+import { Runtime } from './runtime';
 
 function getDistanceBetween(cellA: Cell, cellB: Cell): number {
   const dx = cellA.x - cellB.x;
@@ -86,11 +86,11 @@ function findPath(fromCell: Cell, toCell: Cell, allCells: Cell[]): Cell[] {
   return [];
 }
 
-export function clearTrace(state: State) {
-  state.trace.forEach((cell) => cell.set('trace', null));
-  state.trace = [];
+export function clearTrace(runtime: Runtime) {
+  runtime.trace.forEach((cell) => cell.set('trace', null));
+  runtime.trace = [];
 }
 
-export function drawTrace(state: State, color: number) {
-  state.trace.forEach((cell) => cell.set('trace', color));
+export function drawTrace(runtime: Runtime, color: number) {
+  runtime.trace.forEach((cell) => cell.set('trace', color));
 }

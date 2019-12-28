@@ -1,25 +1,25 @@
 import * as constants from '../../constants';
 import { Cell } from '../../cell';
-import { State } from '../state';
+import { Runtime } from '../runtime';
 import { getAt } from '../playground-utils';
 
 /**
- * IMPORTANT! `cell` is not always `state.selected`.
+ * IMPORTANT! `cell` is not always `runtime.selected`.
  */
-export function unselectCell(cell: Cell, state: State) {
+export function unselectCell(cell: Cell, runtime: Runtime) {
   cell.set('selected', null);
-  state.selected = null;
+  runtime.selected = null;
 }
 
-export function selectCell(cell: Cell, state: State) {
+export function selectCell(cell: Cell, runtime: Runtime) {
   cell.set('selected', 1);
-  state.selected = cell;
+  runtime.selected = cell;
 }
 
-export function moveBall(fromCell: Cell, toCell: Cell, state: State) {
+export function moveBall(fromCell: Cell, toCell: Cell, runtime: Runtime) {
   toCell.set('ball', fromCell.get('ball'));
   fromCell.set('ball', null);
-  state.lastBallMove = [fromCell, toCell];
+  runtime.lastBallMove = [fromCell, toCell];
 }
 
 /**
@@ -65,17 +65,17 @@ export function findCellsToWipe(allCells: Cell[]): Cell[] {
   return Array.from(toWipe);
 }
 
-export function wipeCells(cells: Cell[], state: State) {
-  state.lastWipedCells = cells;
-  state.lastWipedColor = cells[0].get('ball');
+export function wipeCells(cells: Cell[], runtime: Runtime) {
+  runtime.lastWipedCells = cells;
+  runtime.lastWipedColor = cells[0].get('ball');
   cells.forEach((cell) => cell.set('ball', null));
 }
 
-export function clearWipedState(state: State) {
-  state.lastWipedCells = [];
-  state.lastWipedColor = null;
+export function clearWipedState(runtime: Runtime) {
+  runtime.lastWipedCells = [];
+  runtime.lastWipedColor = null;
 }
 
-export function undoWipe(state: State) {
-  state.lastWipedCells.forEach((cell) => cell.set('ball', state.lastWipedColor));
+export function undoWipe(runtime: Runtime) {
+  runtime.lastWipedCells.forEach((cell) => cell.set('ball', runtime.lastWipedColor));
 }
