@@ -9,7 +9,7 @@ import { makeIntentions, separateIntentionsFromBalls, settleIntentions, } from '
 import { clickOnBall, clickOnEmptyOrIntendedCell } from './actions/ball-actions';
 import { undoSettleIntention, undoIntentions } from './actions/intention-utils';
 import { clearTrace, drawTrace, findShortestPath } from './trace-utils';
-import { moveBall } from './actions/ball-utils';
+import { moveBall, undoWipe } from './actions/ball-utils';
 
 export class Gameplay {
   private readonly fsm: Fsm;
@@ -69,12 +69,17 @@ export class Gameplay {
 
   private createCtrlZHandler() {
     return (e: KeyboardEvent) => {
-      if (e.ctrlKey && (e.key === 'z' || e.key === 'Z')) {
-        undoIntentions(this.playground.cells);
-        undoSettleIntention(this.state);
-        moveBall(this.state.lastBallMove[1], this.state.lastBallMove[0], this.state);
-        this.fsm.goTo(FsmNames.MAKE_INTENTIONS);
+      const isCtrlZ = e.ctrlKey && (e.key === 'z' || e.key === 'Z');
+      if (!isCtrlZ || !this.state.lastBallMove) {
+        return;
       }
+
+      undoWipe(this.state);
+      undoIntentions(this.playground.cells);
+      undoSettleIntention(this.state);
+      moveBall(this.state.lastBallMove[1], this.state.lastBallMove[0], this.state);
+      this.state.lastBallMove = null;
+      this.fsm.goTo(FsmNames.MAKE_INTENTIONS);
     }
   }
 }

@@ -19,7 +19,7 @@ export function clickOnBall(cell: Cell, state: State, fsm: Fsm) {
 }
 
 export function clickOnEmptyOrIntendedCell(currentCell: Cell, allCells: Cell[], state: State, fsm: Fsm) {
-  if (!state.selected || !state.trace) {
+  if (!state.selected || state.trace.length === 0) {
     return; // fsm.goTo(FsmNames.NOTHING_SELECTED);
   }
 

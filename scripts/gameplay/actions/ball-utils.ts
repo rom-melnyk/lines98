@@ -25,7 +25,7 @@ export function moveBall(fromCell: Cell, toCell: Cell, state: State) {
 /**
  * Does not include current cell!
  */
-function followColor(cell: Cell, allCells: Cell[], incX: -1 | 0 | 1, incY: -1 | 0 | 1): Cell[] {
+function followColorAlongLine(cell: Cell, allCells: Cell[], incX: -1 | 0 | 1, incY: -1 | 0 | 1): Cell[] {
   const result: Cell[] = [];
   let { x, y } = cell;
   let nextCell: Cell;
@@ -51,10 +51,10 @@ export function findCellsToWipe(allCells: Cell[]): Cell[] {
     .filter((cell) => cell.get('ball'))
     .forEach((cell) => {
       const cellsWithSameColor = [].concat(
-        followColor(cell, allCells, 1, 0),
-        followColor(cell, allCells, 0, 1),
-        followColor(cell, allCells, 1, 1),
-        followColor(cell, allCells, -1, 1),
+        followColorAlongLine(cell, allCells, 1, 0),
+        followColorAlongLine(cell, allCells, 0, 1),
+        followColorAlongLine(cell, allCells, 1, 1),
+        followColorAlongLine(cell, allCells, -1, 1),
       );
       cellsWithSameColor.forEach((cellWithSameColor) => toWipe.add(cellWithSameColor));
       if (cellsWithSameColor.length > 0) {
@@ -74,4 +74,8 @@ export function wipeCells(cells: Cell[], state: State) {
 export function clearWipedState(state: State) {
   state.lastWipedCells = [];
   state.lastWipedColor = null;
+}
+
+export function undoWipe(state: State) {
+  state.lastWipedCells.forEach((cell) => cell.set('ball', state.lastWipedColor));
 }
