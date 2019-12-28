@@ -13,5 +13,3 @@ export const palettes = [1];
  * Must not contain 0; {@see ./cell.ts#Cell}.
  */
 export const colors = [1, 2, 3, 4, 5];
-
-export class GameOver extends Error{}
