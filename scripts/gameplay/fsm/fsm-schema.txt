@@ -1,0 +1,51 @@
+Legend:
+
+|| state ||         State.
+                    Can be "stable" (awaiting action from the outside e.g., mouse click to continue)
+                    or "transitional" (followed by the immediate action/condition).
+// action //        Procedures that can change state.
+<< condition >>     Think "guards" or semaphores that make decision where to go further.
+
+
+ 1. << Are there 3 free (no ball; no intention) cells for intention? >>
+       a) No --> GO_TO_[game_over].
+       b) Yes --> GO_TO_[2].
+ 2. // Make intentions. //
+ 3. || Nothing selected. Awaiting user's activity. ||
+       a) User clicks on empty cell --> DO_NOTHING.
+       b) User clicks on ball --> // select; GO_TO_[4] //.
+       c) User presses Ctrl-Z --> // Perform undo //
+                                     - Clear intentions.
+                                     - Undo wiped cells.
+                                     - Undo ball moved.
+                                     - GO_TO_[1].
+ 4. || Ball selected. Awaiting user's activity. ||
+       a) User clicks on another ball --> // Switch selection; GO_TO_[4] //.
+       b) User clicks on selected ball --> // Unselect it; GO_TO_[3] //.
+       c) User clicks on empty cell --> GO_TO_[5].
+ 5. << Is there a path from selected cell to clicked one? >>
+       a) No --> DO_NOTHING.
+       b) Yes --> GO_TO_[6].
+ 6. // Move selected ball to "clicked" position. //
+       Don't clear the "intention" flag if any!
+       Store previous position in state/history (see [3c]).
+ 7. << Are there full lines on the board? >>
+       a) Yes --> // Perform wipe //; GO_TO_[3].
+       b) No: GO_TO_[8]
+ 8. || Transitional state: there are no lines on the board. ||
+ 9. << Is there as ball upon intention? >>
+       a) Yes:
+          z: << Is there 1 free cell for intention? >>
+                - No --> GO_TO_[game_over].
+                - Yes --> GO_TO_[9ay].
+          y: // Move intention from "ball" cell to found free one. //
+          x: GO_TO_[10].
+10. || Transitional state: there are intentions separate from balls. ||
+11. // Settle intentions. //
+12. << Are there full lines on the board? See [7]. >>
+       a) Yes? --> // Perform wipe //; GO_TO_[13].
+          - GO_TO_[13].
+       b) No --> GO_TO_[13].
+13. || Transitional state: all intentions settled to balls; no lines on the board. ||
+14. // GO_TO_[1] //
+15. || Game over: occurs upon referring to. ||
