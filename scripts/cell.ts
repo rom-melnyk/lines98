@@ -3,7 +3,7 @@ import * as constants from './constants';
 type CellProperties = 'ball' | 'intention' | 'trace' | 'selected';
 
 export class Cell {
-  public static fromSerialized(serialized: string): Cell {
+  public static fromSerialized(serialized: string) {
     const [coordsMarker, ballMarker, intentionMarker] = serialized.split('|');
 
     const coords = coordsMarker.split(':');
@@ -26,10 +26,7 @@ export class Cell {
       throw new Error(`Cannot parse intention "${intentionMarker}"`);
     }
 
-    const cell = new Cell(x, y);
-    cell.set('ball', ball);
-    cell.set('intention', intention);
-    return cell;
+    return { x, y, ball, intention };
   }
 
   private readonly htmlElement: HTMLDivElement;
@@ -66,12 +63,8 @@ export class Cell {
     this.properties[property] = value;
   }
 
-  public serializeCoords() {
-    return `${this.x}:${this.y}`;
-  }
-
   public serialize() {
-    const coords = this.serializeCoords();
+    const coords = `${this.x}:${this.y}`;
     const ball = this.get('ball') ? this.get('ball') : '';
     const intention = this.get('intention') ? this.get('intention') : '';
     return `${coords}|${ball}|${intention}`;

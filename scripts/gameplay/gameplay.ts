@@ -10,6 +10,7 @@ import { clickOnBall, clickOnEmptyOrIntendedCell } from './actions/ui-handlers';
 import { undoSettleIntention, undoIntentions } from './actions/intention-utils';
 import { clearTrace, drawTrace, findShortestPath } from './trace-utils';
 import { moveBall, undoWipe } from './actions/ball-utils';
+import { loadGame } from './actions/load-save-utlis';
 
 export class Gameplay {
   private readonly fsm: Fsm;
@@ -35,14 +36,16 @@ export class Gameplay {
     this.fsm.add(FsmNames.INTENTIONS_READY_TO_SETTLE, { transition: FsmNames.SETTLE_INTENTIONS });
     this.fsm.add(FsmNames.INTENTIONS_SETTLED, { transition: FsmNames.MAKE_INTENTIONS });
 
-    this.fsm.add(FsmNames.MAKE_INTENTIONS, () => makeIntentions(this.playground.cells));
+    this.fsm.add(FsmNames.MAKE_INTENTIONS, () => makeIntentions(this.playground.cells, this.runtime));
     this.fsm.add(FsmNames.SEPARATE_INTENTIONS_FROM_BALLS, () => separateIntentionsFromBalls(this.playground.cells));
     this.fsm.add(FsmNames.SETTLE_INTENTIONS, () => settleIntentions(this.playground.cells, this.runtime));
   }
 
   public init() {
-    this.fsm.goTo(FsmNames.MAKE_INTENTIONS);
-    this.fsm.goTo(FsmNames.SETTLE_INTENTIONS);
+    if (!loadGame(this.playground.cells, this.runtime)) {
+      this.fsm.goTo(FsmNames.MAKE_INTENTIONS);
+      this.fsm.goTo(FsmNames.SETTLE_INTENTIONS);
+    }
   }
 
   private createMouseClickHandler(cell: Cell) {

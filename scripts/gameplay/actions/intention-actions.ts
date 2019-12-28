@@ -4,8 +4,9 @@ import { Cell } from '../../cell';
 import { FsmNames } from '../fsm/names';
 import { Runtime } from '../runtime';
 import { findCellsToWipe, wipeCells, clearWipedState } from './ball-utils';
+import { saveGame } from './load-save-utlis';
 
-export function makeIntentions(allCells: Cell[]) {
+export function makeIntentions(allCells: Cell[], runtime: Runtime) {
   const availableCells = allCells.filter((cell) => !cell.get('ball'));
   if (availableCells.length < constants.ballsPerIntention) {
     return FsmNames.GAME_OVER;
@@ -19,6 +20,7 @@ export function makeIntentions(allCells: Cell[]) {
     cell.set('intention', intention);
   }
 
+  saveGame(allCells, runtime);
   return FsmNames.NOTHING_SELECTED;
 }
 
