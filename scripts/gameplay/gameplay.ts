@@ -7,10 +7,10 @@ import { FsmNames } from './fsm/names';
 
 import { makeIntentions, separateIntentionsFromBalls, settleIntentions, } from './actions/intention-actions';
 import { clickOnBall, clickOnEmptyOrIntendedCell } from './actions/ui-handlers';
-import { undoSettleIntention, undoIntentions } from './actions/intention-utils';
+import { undoSettleIntention, undoIntentions } from './operations/intention-operations';
 import { clearTrace, drawTrace, findShortestPath } from './trace-utils';
-import { moveBall, undoWipe } from './actions/ball-utils';
-import { loadGame } from './actions/load-save-utlis';
+import { moveBall, undoWipe } from './operations/ball-operations';
+import { loadGame } from './operations/load-save-operations';
 
 export class Gameplay {
   private readonly fsm: Fsm;

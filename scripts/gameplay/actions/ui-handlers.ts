@@ -2,7 +2,7 @@ import { Cell } from '../../cell';
 import { Runtime } from '../runtime';
 import { Fsm } from '../fsm/fsm';
 import { FsmNames } from '../fsm/names';
-import { unselectCell, selectCell, moveBall, findCellsToWipe, wipeCells, clearWipedState } from './ball-utils';
+import { unselectCell, selectCell, moveBall, findCellsToWipe, wipeCells, clearWipedState } from '../operations/ball-operations';
 import { clearTrace } from '../trace-utils';
 
 export function clickOnBall(cell: Cell, runtime: Runtime, fsm: Fsm) {

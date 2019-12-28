@@ -3,8 +3,8 @@ import { random, getRandomElement } from '../playground-utils';
 import { Cell } from '../../cell';
 import { FsmNames } from '../fsm/names';
 import { Runtime } from '../runtime';
-import { findCellsToWipe, wipeCells, clearWipedState } from './ball-utils';
-import { saveGame } from './load-save-utlis';
+import { findCellsToWipe, wipeCells, clearWipedState } from '../operations/ball-operations';
+import { saveGame } from '../operations/load-save-operations';
 
 export function makeIntentions(allCells: Cell[], runtime: Runtime) {
   const availableCells = allCells.filter((cell) => !cell.get('ball'));
