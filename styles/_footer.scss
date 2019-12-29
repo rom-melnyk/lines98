@@ -1,13 +1,12 @@
 @import "config";
 
 footer.footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  @include header-footer($footer-height);
 
-  padding: 2rem 0;
-  font-size: .75rem;
+  & * {
+    font-size: .5rem;
+    color: $cell-border-color;
+  }
 
   .help {
     float: left;

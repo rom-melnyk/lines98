@@ -18,7 +18,7 @@ body {
 }
 
 .float-container {
-  width: $playground-width;
+  width: $playground-width - 2 * $cell-size * $cell-margin-ratio;
   margin: 0 auto;
 
   &:after {

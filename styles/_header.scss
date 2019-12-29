@@ -1,13 +1,21 @@
 @import "config";
 
 header.stats-panel {
-  margin-bottom: 2rem;
-  padding: 2rem 0;
+  @include header-footer($header-height);
+
+  .undo {
+    float: left;
+    padding: 0 1rem;
+    font-size: 1rem;
+    color: $cell-border-color;
+    cursor: pointer;
+
+    @include as-button;
+  }
 
   .score {
     float: right;
     font-family: monospace;
-    font-size: 1.5rem;
     font-weight: bold;
     color: $cell-border-color;
   }

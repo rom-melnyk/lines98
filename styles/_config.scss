@@ -1,9 +1,47 @@
-$cell-size: 7vmin;
-$cell-margin: .05 * $cell-size;
-$cell-count: 9;
-$playground-width: ($cell-size + 2 * $cell-margin) * $cell-count;
+$header-height: 4rem; // 2rem of top/bottom padding + 2rem of line-height
+$footer-height: 2rem; // same but half-way
+
+// Perfectly fine for vertically oriented viewports with `H >= `
+$playground-width: 90vw;
+
+
+$cell-margin-ratio: .05;
+$cells-in-row: 9;
+
+$cell-size: $playground-width / ($cells-in-row * (1 + 2 * $cell-margin-ratio));
 
 $cell-border-color: #bbb;
 
 $ball-size: .9;
 $intention-ball-size: .2;
+
+@mixin as-button {
+  $highlight_color: lighten($cell-border-color, 20%);
+  $highlight_transition: .2s ease-in-out;
+
+  border-radius: 2 * $cell-size * $cell-margin-ratio;
+  user-select: none;
+
+  border: 1px dotted $cell-border-color;
+  background-color: transparent;
+  transition:
+    background-color $highlight_transition,
+    border-color $highlight_transition;
+
+  &:hover {
+    border-color: $highlight_color;
+    background-color: $highlight_color;
+  }
+}
+
+@mixin header-footer($height) {
+  height: $height;
+  padding: ($height / 4) 0;
+  line-height: $height / 2;
+  font-size: $height / 2;
+  vertical-align: middle;
+
+  & * {
+    line-height: $height / 2;
+  }
+}

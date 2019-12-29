@@ -5,27 +5,14 @@
  */
 
 .cell {
-  $highlight_color: lighten($cell-border-color, 20%);
-  $highlight_transition: .2s ease-in-out;
   $ball_appearance_transition: .2s ease-in-out;
 
   display: inline-block;
   width: $cell-size;
   height: $cell-size;
-  margin: $cell-margin;
+  margin: $cell-size * $cell-margin-ratio;
 
-  border-radius: 10%;
-
-  border: 1px dotted $cell-border-color;
-  background-color: transparent;
-  transition:
-    background-color $highlight_transition,
-    border-color $highlight_transition;
-
-  &:hover {
-    border-color: $highlight_color;
-    background-color: $highlight_color;
-  }
+  @include as-button;
 
   // ------ Ball, Intention ------
   &::before {
