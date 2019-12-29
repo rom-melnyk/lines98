@@ -2,8 +2,17 @@ import { Cell } from '../../cell';
 import { Runtime } from '../runtime';
 import { Fsm } from '../fsm/fsm';
 import { FsmNames } from '../fsm/names';
-import { unselectCell, selectCell, moveBall, findCellsToWipe, wipeCells, clearWipedFlag } from '../operations/ball-operations';
+import {
+  unselectCell,
+  selectCell,
+  moveBall,
+  findCellsToWipe,
+  wipeCells,
+  clearWipedFlag,
+  undoWipe,
+} from '../operations/ball-operations';
 import { clearTrace } from '../trace-utils';
+import { undoIntentions, undoSettleIntention } from '../operations/intention-operations';
 
 export function clickOnBall(cell: Cell, runtime: Runtime, fsm: Fsm) {
   if (cell.get('selected')) {
@@ -35,4 +44,17 @@ export function clickOnEmptyOrIntendedCell(currentCell: Cell, allCells: Cell[], 
     clearWipedFlag(runtime);
     fsm.goTo(FsmNames.NO_LINES_ON_BOARD);
   }
+}
+
+export function undoLastBallMove(allCells: Cell[], runtime: Runtime, fsm: Fsm) {
+  if (!runtime.lastBallMove) {
+    return;
+  }
+
+  undoWipe(runtime);
+  undoIntentions(allCells);
+  undoSettleIntention(runtime);
+  moveBall(runtime.lastBallMove[1], runtime.lastBallMove[0], runtime);
+  runtime.lastBallMove = null;
+  fsm.goTo(FsmNames.MAKE_INTENTIONS);
 }

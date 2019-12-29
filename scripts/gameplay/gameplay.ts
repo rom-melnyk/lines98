@@ -7,9 +7,7 @@ import { FsmNames } from './fsm/names';
 
 import { clearTrace, drawTrace, findShortestPath } from './trace-utils';
 import { makeIntentions, separateIntentionsFromBalls, settleIntentions, } from './actions/intention-actions';
-import { clickOnBall, clickOnEmptyOrIntendedCell } from './actions/ui-handlers';
-import { undoSettleIntention, undoIntentions } from './operations/intention-operations';
-import { moveBall, undoWipe } from './operations/ball-operations';
+import { clickOnBall, clickOnEmptyOrIntendedCell, undoLastBallMove } from './actions/ui-handlers';
 import { loadGame } from './operations/load-save-operations';
 
 export class Gameplay {
@@ -26,6 +24,8 @@ export class Gameplay {
     });
 
     window.addEventListener('keypress', this.createKeypressHandler());
+    const undoButton = document.querySelector('.stats-panel .undo');
+    undoButton.addEventListener('click', () => undoLastBallMove(this.playground.cells, this.runtime, this.fsm));
 
     this.fsm.add(FsmNames.GAME_OVER, () => null);
 
@@ -70,17 +70,9 @@ export class Gameplay {
 
   private createKeypressHandler() {
     return (e: KeyboardEvent) => {
-      const isCtrlZ = e.ctrlKey && (e.key === 'z' || e.key === 'Z');
-      if (!isCtrlZ || !this.runtime.lastBallMove) {
-        return;
+      if (e.ctrlKey && (e.key === 'z' || e.key === 'Z')) {
+        undoLastBallMove(this.playground.cells, this.runtime, this.fsm);
       }
-
-      undoWipe(this.runtime);
-      undoIntentions(this.playground.cells);
-      undoSettleIntention(this.runtime);
-      moveBall(this.runtime.lastBallMove[1], this.runtime.lastBallMove[0], this.runtime);
-      this.runtime.lastBallMove = null;
-      this.fsm.goTo(FsmNames.MAKE_INTENTIONS);
     }
   }
 }
