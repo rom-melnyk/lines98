@@ -66,7 +66,7 @@ Thosee optimizations madee finding the shortest path pretty fast. Better observe
 
 ## Deployment
 
-`npm run prod` generates production-ready code in the `dist/`. It contains the `index.html`, the JS and CSS files (both minified). Being served from local folder the `inidex.html` should wor in browser.
+`npm run prod` generates production-ready code in the `dist/`. It contains the `index.html`, the JS and CSS files (both minified). Being served from local folder the `inidex.html` should work in browser.
 
 ---
  
