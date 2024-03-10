@@ -3,7 +3,7 @@
 ## Run
 
 - `npm install && npm run demo`
-- [Live demo.](https://melnyk.site/post/17)
+- [Live demo.](https://melnyk.site/prj/20)
 
 ## Architecture overview
 
@@ -62,11 +62,11 @@ In order to find shortest path from selected cell to hovered one the modified [D
 - The "neighbors" are pre-sorted by distance to destination cell (it might look expensive but we perform that operation only when necessary and for maximum four cells).
 - After _any path_ to destination cell has been found the altorithm won't continue with paths which are _already_ of same length or longer (because they cannot deliver shorter solution).
 
-Thosee optimizations madee finding the shortest path pretty fast. Better observed on non-mobile devices (mouse needed).
+Thosee optimizations made finding the shortest path pretty fast. Better observed on non-mobile devices (mouse needed).
 
 ## Deployment
 
-`npm run prod` generates production-ready code in the `dist/`. It contains the `index.html`, the JS and CSS files (both minified). Being served from local folder the `inidex.html` should work in browser.
+`npm run prod` generates production-ready code in the `dist/`. It contains the `index.html`, the JS and CSS files (both minified). Being served from local folder, the `index.html` should work in browser.
 
 ---
  
