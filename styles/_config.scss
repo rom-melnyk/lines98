@@ -7,7 +7,7 @@ $playground-width: 80vmin;
 $cell-margin-ratio: .05;
 $cells-in-row: 9;
 
-$cell-size: $playground-width / ($cells-in-row * (1 + 2 * $cell-margin-ratio));
+$cell-size: calc($playground-width / ($cells-in-row * (1 + 2 * $cell-margin-ratio)));
 
 $cell-border-color: #bbb;
 
@@ -35,12 +35,12 @@ $intention-ball-size: .2;
 
 @mixin header-footer($height) {
   height: $height;
-  padding: ($height / 4) 0;
-  line-height: $height / 2;
-  font-size: $height / 2;
+  padding: calc($height / 4) 0;
+  line-height: calc($height / 2);
+  font-size: calc($height / 2);
   vertical-align: middle;
 
   & * {
-    line-height: $height / 2;
+    line-height: calc($height / 2);
   }
 }

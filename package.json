@@ -1,10 +1,9 @@
 {
   "name": "lines98",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "dev": "rm -fr dist > /dev/null && parcel -p 9000 index.html",
+    "dev": "rm -fr dist > /dev/null && parcel --no-cache -p 9000 index.html",
     "prod": "rm -fr dist > /dev/null && parcel build --no-cache --no-source-maps --public-url . index.html",
     "demo": "rm -fr dist > /dev/null && parcel serve --open -p 9000 --no-cache --no-source-maps index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,9 +12,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "parcel": "^1.12.4",
-    "parcel-bundler": "^1.12.4",
-    "sass": "^1.24.0",
-    "typescript": "^3.7.4"
+    "parcel": "2.12.0",
+    "typescript": "5.4.3"
+  },
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.12.0"
   }
 }
