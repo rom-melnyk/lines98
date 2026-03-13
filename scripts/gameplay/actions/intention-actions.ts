@@ -1,31 +1,31 @@
-import * as constants from '../../constants';
-import { random, getRandomElement } from '../playground-utils';
-import { Cell } from '../../cell';
-import { FsmNames } from '../fsm/names';
-import { Runtime } from '../runtime';
-import { findCellsToWipe, wipeCells, clearWipedFlag } from '../operations/ball-operations';
-import { saveGame } from '../operations/load-save-operations';
+import * as constants from '../../constants'
+import { random, getRandomElement } from '../playground-utils'
+import { Cell } from '../../cell'
+import { FsmNames } from '../fsm/names'
+import { Runtime } from '../runtime'
+import { findCellsToWipe, wipeCells, clearWipedFlag } from '../operations/ball-operations'
+import { saveGame } from '../operations/load-save-operations'
 
 /**
  * @action
  * @return {FsmNames.GAME_OVER | FsmNames.NOTHING_SELECTED}
  */
 export function makeIntentions(allCells: Cell[], runtime: Runtime) {
-  const availableCells = allCells.filter((cell) => !cell.get('ball'));
+  const availableCells = allCells.filter((cell) => !cell.get('ball'))
   if (availableCells.length < constants.ballsPerIntention) {
-    return FsmNames.GAME_OVER;
+    return FsmNames.GAME_OVER
   }
 
   for (let i = 0; i < constants.ballsPerIntention; i++) {
-    const index = random(availableCells.length);
+    const index = random(availableCells.length)
     const cell = availableCells.splice(index, 1)[0]; // Splice from array and pick it.
-    const intention = getRandomElement<number>(constants.colors);
+    const intention = getRandomElement<number>(constants.colors)
 
-    cell.set('intention', intention);
+    cell.set('intention', intention)
   }
 
-  saveGame(allCells, runtime);
-  return FsmNames.NOTHING_SELECTED;
+  saveGame(allCells, runtime)
+  return FsmNames.NOTHING_SELECTED
 }
 
 /**
@@ -33,20 +33,20 @@ export function makeIntentions(allCells: Cell[], runtime: Runtime) {
  * @return {FsmNames.GAME_OVER | FsmNames.INTENTIONS_READY_TO_SETTLE}
  */
 export function separateIntentionsFromBalls(allCells: Cell[]) {
-  const intentionsOverBalls = allCells.filter((cell) => cell.get('ball') && cell.get('intention'));
-  const availableCells = allCells.filter((cell) => !cell.get('ball') && !cell.get('intention'));
+  const intentionsOverBalls = allCells.filter((cell) => cell.get('ball') && cell.get('intention'))
+  const availableCells = allCells.filter((cell) => !cell.get('ball') && !cell.get('intention'))
   if (availableCells.length < intentionsOverBalls.length) {
-    return FsmNames.GAME_OVER;
+    return FsmNames.GAME_OVER
   }
 
   intentionsOverBalls.forEach((source) => {
-    const index = random(availableCells.length);
+    const index = random(availableCells.length)
     const destination = availableCells.splice(index, 1)[0]; // Splice from array and pick it.
-    destination.set('intention', source.get('intention'));
-    source.set('intention', null);
-  });
+    destination.set('intention', source.get('intention'))
+    source.set('intention', null)
+  })
 
-  return FsmNames.INTENTIONS_READY_TO_SETTLE;
+  return FsmNames.INTENTIONS_READY_TO_SETTLE
 }
 
 /**
@@ -54,18 +54,18 @@ export function separateIntentionsFromBalls(allCells: Cell[]) {
  * @return {FsmNames.INTENTIONS_SETTLED}
  */
 export function settleIntentions(allCells: Cell[], runtime: Runtime) {
-  runtime.lastSettled = allCells.filter((cell) => cell.get('intention'));
+  runtime.lastSettled = allCells.filter((cell) => cell.get('intention'))
   runtime.lastSettled.forEach((cell) => {
-    cell.set('ball', cell.get('intention'));
-    cell.set('intention', null);
-  });
+    cell.set('ball', cell.get('intention'))
+    cell.set('intention', null)
+  })
 
-  const cellsToWipe = findCellsToWipe(allCells);
+  const cellsToWipe = findCellsToWipe(allCells)
   if (cellsToWipe.length > 0) {
-    wipeCells(cellsToWipe, runtime);
+    wipeCells(cellsToWipe, runtime)
   } else {
-    clearWipedFlag(runtime);
+    clearWipedFlag(runtime)
   }
 
-  return FsmNames.INTENTIONS_SETTLED;
+  return FsmNames.INTENTIONS_SETTLED
 }

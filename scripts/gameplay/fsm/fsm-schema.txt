@@ -7,7 +7,7 @@ LEGEND
 << condition >>     Think "guards" or semaphores that make decision where to go further.
 
 Bear in mind that all the state, actions and conditions are FSM entities:
-- actions and conditions are functions with 1+ exit points leading to next FSM entity;
+- actions and conditions are functions with 1+ exit points leading to next FSM entity
 - states are functions
   - either leading to next FSM entity (transitional state),
   - or returning nothing (stable states).
@@ -20,10 +20,10 @@ Conditions are often included in following action, e.g.,
 ```
 function makeIntention() {
   if (areThereThreeFreeCells?) {
-    // perform "make intentions" routine;
-    return FsmNames.NOTHING_SELECTED;
+    // perform "make intentions" routine
+    return FsmNames.NOTHING_SELECTED
   } else {
-    return FsmNames.GAME_OVER;
+    return FsmNames.GAME_OVER
   }
 }
 ```
