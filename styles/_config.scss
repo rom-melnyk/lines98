@@ -1,3 +1,5 @@
+@use "sass:color";
+
 $header-height: 4rem; // 2rem of top/bottom padding + 2rem of line-height
 $footer-height: 2rem; // same but half-way
 
@@ -15,7 +17,7 @@ $ball-size: .9;
 $intention-ball-size: .2;
 
 @mixin as-button {
-  $highlight_color: lighten($cell-border-color, 20%);
+  $highlight_color: color.adjust($cell-border-color, $lightness: 20%);
   $highlight_transition: .2s ease-in-out;
 
   border-radius: 2 * $cell-size * $cell-margin-ratio;

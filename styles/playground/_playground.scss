@@ -1,6 +1,6 @@
-@import "../config";
-@import "palettes";
-@import "cell";
+@use "../config" as *;
+@use "palettes";
+@use "cell";
 
 .playground {
   margin: 0 auto;

@@ -1,4 +1,4 @@
-@import "config";
+@use "config" as *;
 
 * {
   box-sizing: border-box;
