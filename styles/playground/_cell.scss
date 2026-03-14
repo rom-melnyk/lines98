@@ -14,7 +14,7 @@
 
   @include as-button;
 
-  // ------ Ball, Intention ------
+  // ------ Ball, Drops ------
   &::before {
     content: "";
     display: block;
@@ -47,8 +47,8 @@
     100% { transform: scale($ball-size - .1); }
   }
 
-  // ------ Intention ------
-  &[intention]::before {
-    transform: scale($intention-ball-size);
+  // ------ Drops ------
+  &[drop]::before {
+    transform: scale($drop-ball-size);
   }
 }

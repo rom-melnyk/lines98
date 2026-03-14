@@ -15,10 +15,10 @@ export function loadGame(allCells: Cell[], runtime: Runtime): boolean {
     runtime.score = score
     runtime.updateScore(0)
     cells.forEach((serialized) => {
-      const { x, y, ball, intention } = Cell.fromSerialized(serialized)
+      const { x, y, ball, drop } = Cell.fromSerialized(serialized)
       const cell = getAt(allCells, x, y)
       cell.set('ball', ball)
-      cell.set('intention', intention)
+      cell.set('drop', drop)
     })
     return true
   } catch (e) {
@@ -31,7 +31,7 @@ export function saveGame(allCells: Cell[], runtime: Runtime) {
   const save: Save = {
     score: runtime.score,
     cells: allCells
-      .filter((cell) => cell.get('ball') || cell.get('intention'))
+      .filter((cell) => cell.get('ball') || cell.get('drop'))
       .map((cell) => cell.serialize())
   }
   localStorage.setItem(localStorageKey, JSON.stringify(save))

@@ -64,21 +64,3 @@ export function findCellsToWipe(allCells: Cell[]): Cell[] {
 
   return Array.from(toWipe)
 }
-
-export function wipeCells(cells: Cell[], runtime: Runtime) {
-  runtime.lastWipedCells = cells
-  runtime.lastWipedColor = cells[0].get('ball')
-  cells.forEach((cell) => cell.set('ball', null))
-  runtime.updateScore(cells.length)
-}
-
-export function clearWipedFlag(runtime: Runtime) {
-  runtime.lastWipedCells = []
-  runtime.lastWipedColor = null
-}
-
-export function undoWipe(runtime: Runtime) {
-  runtime.lastWipedCells.forEach((cell) => cell.set('ball', runtime.lastWipedColor))
-  runtime.updateScore(-runtime.lastWipedCells.length)
-  clearWipedFlag(runtime)
-}

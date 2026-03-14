@@ -14,7 +14,7 @@ $cell-size: calc($playground-width / ($cells-in-row * (1 + 2 * $cell-margin-rati
 $cell-border-color: #bbb;
 
 $ball-size: .9;
-$intention-ball-size: .2;
+$drop-ball-size: .2;
 
 @mixin as-button {
   $highlight_color: color.adjust($cell-border-color, $lightness: 20%);

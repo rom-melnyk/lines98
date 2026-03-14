@@ -4,7 +4,7 @@ import { Cell } from './cell'
 export class Playground {
   public readonly cells: Cell[] = []
   private palette: number = 1
-  private htmlElement: HTMLDivElement
+  private readonly htmlElement: HTMLDivElement
 
   constructor() {
     this.htmlElement = document.querySelector('.playground')
@@ -20,7 +20,7 @@ export class Playground {
   }
 
   public setPalette(palette: number): void {
-    this.htmlElement.classList.remove(`${this.palette}`)
+    this.htmlElement.classList.remove(`palette-${this.palette}`)
     this.palette = palette
     this.htmlElement.classList.add(`palette-${palette}`)
   }

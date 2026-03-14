@@ -7,12 +7,9 @@ import {
   selectCell,
   moveBall,
   findCellsToWipe,
-  wipeCells,
-  clearWipedFlag,
-  undoWipe,
 } from '../operations/ball-operations'
 import { clearTrace } from '../trace-utils'
-import { undoIntentions, undoSettleIntention } from '../operations/intention-operations'
+import { undoDrop, undoDropsToBalls } from '../operations/ball-drop-operations'
 
 export function clickOnBall(cell: Cell, runtime: Runtime, fsm: Fsm) {
   if (cell.get('selected')) {
@@ -27,7 +24,7 @@ export function clickOnBall(cell: Cell, runtime: Runtime, fsm: Fsm) {
   }
 }
 
-export function clickOnEmptyOrIntendedCell(currentCell: Cell, allCells: Cell[], runtime: Runtime, fsm: Fsm) {
+export function clickOnEmptyOrDroppedCell(currentCell: Cell, allCells: Cell[], runtime: Runtime, fsm: Fsm) {
   if (!runtime.selected || runtime.trace.length === 0) {
     return; // fsm.goTo(FsmNames.NOTHING_SELECTED)
   }
@@ -38,10 +35,10 @@ export function clickOnEmptyOrIntendedCell(currentCell: Cell, allCells: Cell[], 
 
   const cellsToWipe = findCellsToWipe(allCells)
   if (cellsToWipe.length > 0) {
-    wipeCells(cellsToWipe, runtime)
+    runtime.wipeCells(cellsToWipe)
     fsm.goTo(FsmNames.NOTHING_SELECTED)
   } else {
-    clearWipedFlag(runtime)
+    runtime.clearWipedFlag()
     fsm.goTo(FsmNames.NO_LINES_ON_BOARD)
   }
 }
@@ -51,10 +48,10 @@ export function undoLastBallMove(allCells: Cell[], runtime: Runtime, fsm: Fsm) {
     return
   }
 
-  undoWipe(runtime)
-  undoIntentions(allCells)
-  undoSettleIntention(runtime)
+  runtime.undoWipe()
+  undoDrop(allCells)
+  undoDropsToBalls(runtime)
   moveBall(runtime.lastBallMove[1], runtime.lastBallMove[0], runtime)
   runtime.lastBallMove = null
-  fsm.goTo(FsmNames.MAKE_INTENTIONS)
+  fsm.goTo(FsmNames.DROP_NEW_BALLS)
 }

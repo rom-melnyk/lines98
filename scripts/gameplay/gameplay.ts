@@ -6,8 +6,8 @@ import { Fsm } from './fsm/fsm'
 import { FsmNames } from './fsm/names'
 
 import { clearTrace, drawTrace, findShortestPath } from './trace-utils'
-import { makeIntentions, separateIntentionsFromBalls, settleIntentions, } from './actions/intention-actions'
-import { clickOnBall, clickOnEmptyOrIntendedCell, undoLastBallMove } from './actions/ui-handlers'
+import { dropNewBalls, moveDropsAwayFromExistingBalls, convertDropsToBalls, } from './actions/ball-drop-actions'
+import { clickOnBall, clickOnEmptyOrDroppedCell, undoLastBallMove } from './actions/ui-handlers'
 import { loadGame } from './operations/load-save-operations'
 
 export class Gameplay {
@@ -29,20 +29,19 @@ export class Gameplay {
 
     this.fsm.add(FsmNames.GAME_OVER, () => null)
 
-    this.fsm.add(FsmNames.MAKE_INTENTIONS, () => makeIntentions(this.playground.cells, this.runtime))
+    this.fsm.add(FsmNames.DROP_NEW_BALLS, () => dropNewBalls(this.playground.cells, this.runtime))
     this.fsm.add(FsmNames.NOTHING_SELECTED, () => null)
     this.fsm.add(FsmNames.BALL_SELECTED, () => null)
-    this.fsm.add(FsmNames.NO_LINES_ON_BOARD, () => FsmNames.SEPARATE_INTENTIONS_FROM_BALLS)
-    this.fsm.add(FsmNames.SEPARATE_INTENTIONS_FROM_BALLS, () => separateIntentionsFromBalls(this.playground.cells))
-    this.fsm.add(FsmNames.INTENTIONS_READY_TO_SETTLE, () => FsmNames.SETTLE_INTENTIONS)
-    this.fsm.add(FsmNames.SETTLE_INTENTIONS, () => settleIntentions(this.playground.cells, this.runtime))
-    this.fsm.add(FsmNames.INTENTIONS_SETTLED, () => FsmNames.MAKE_INTENTIONS)
+    this.fsm.add(FsmNames.NO_LINES_ON_BOARD, () => FsmNames.MOVE_DROPS_AWAY_FROM_EXISTING_BALLS)
+    this.fsm.add(FsmNames.MOVE_DROPS_AWAY_FROM_EXISTING_BALLS, () => moveDropsAwayFromExistingBalls(this.playground.cells))
+    this.fsm.add(FsmNames.CONVERT_DROPS_TO_BALLS, () => convertDropsToBalls(this.playground.cells, this.runtime))
+    this.fsm.add(FsmNames.DROPS_CONVERTED_TO_BALLS, () => FsmNames.DROP_NEW_BALLS)
   }
 
   public init() {
     if (!loadGame(this.playground.cells, this.runtime)) {
-      this.fsm.goTo(FsmNames.MAKE_INTENTIONS)
-      this.fsm.goTo(FsmNames.SETTLE_INTENTIONS)
+      this.fsm.goTo(FsmNames.DROP_NEW_BALLS)
+      this.fsm.goTo(FsmNames.CONVERT_DROPS_TO_BALLS)
     }
   }
 
@@ -51,7 +50,7 @@ export class Gameplay {
       if (cell.get('ball')) {
         clickOnBall(cell, this.runtime, this.fsm)
       } else {
-        clickOnEmptyOrIntendedCell(cell, this.playground.cells, this.runtime, this.fsm)
+        clickOnEmptyOrDroppedCell(cell, this.playground.cells, this.runtime, this.fsm)
       }
     }
   }

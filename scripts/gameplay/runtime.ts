@@ -32,4 +32,22 @@ export class Runtime {
     const score = this.score.toString(10).padStart(5, '0')
     this.scoreElement.innerText = score
   }
+
+  public wipeCells(cells: Cell[]) {
+    this.lastWipedCells = cells
+    this.lastWipedColor = cells[0].get('ball')
+    cells.forEach((cell) => cell.set('ball', null))
+    this.updateScore(cells.length)
+  }
+
+  public clearWipedFlag() {
+    this.lastWipedCells = []
+    this.lastWipedColor = null
+  }
+
+  public undoWipe() {
+    this.lastWipedCells.forEach((cell) => cell.set('ball', this.lastWipedColor))
+    this.updateScore(-this.lastWipedCells.length)
+    this.clearWipedFlag()
+  }
 }

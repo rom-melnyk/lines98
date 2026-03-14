@@ -1,6 +1,6 @@
 export const playgroundSize = 9
 export const lineSize = 5
-export const ballsPerIntention = 3
+export const ballsPerDrop = 3
 
 /**
  * @see ../styles/playground/_palettes.scss
