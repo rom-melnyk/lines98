@@ -1,5 +1,5 @@
+import { random, pickRandom } from '@rom98m/utils'
 import * as constants from '../../constants'
-import { random, getRandomElement } from '../playground-utils'
 import { Cell } from '../../cell'
 import { FsmNames } from '../fsm/names'
 import { Runtime } from '../runtime'
@@ -19,7 +19,7 @@ export function makeIntentions(allCells: Cell[], runtime: Runtime) {
   for (let i = 0; i < constants.ballsPerIntention; i++) {
     const index = random(availableCells.length)
     const cell = availableCells.splice(index, 1)[0]; // Splice from array and pick it.
-    const intention = getRandomElement<number>(constants.colors)
+    const intention = pickRandom(constants.colors)
 
     cell.set('intention', intention)
   }
