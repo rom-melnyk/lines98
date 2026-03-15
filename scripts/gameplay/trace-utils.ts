@@ -5,7 +5,7 @@ import { Runtime } from './runtime'
 function getDistanceBetween(cellA: Cell, cellB: Cell): number {
   const dx = cellA.x - cellB.x
   const dy = cellA.y - cellB.y
-  return Math.sqrt(dx * dx + dy * dy)
+  return Math.abs(dx) + Math.abs(dy)
 }
 
 function findNeighborsOf(fromCell: Cell, toCell: Cell, allCells: Cell[], visitedCells: Set<Cell>): Cell[] {
@@ -14,7 +14,7 @@ function findNeighborsOf(fromCell: Cell, toCell: Cell, allCells: Cell[], visited
     getAt(allCells, fromCell.x, fromCell.y - 1),
     getAt(allCells, fromCell.x + 1, fromCell.y),
     getAt(allCells, fromCell.x - 1, fromCell.y),
-  ].filter((cell) => {
+  ].filter(cell => {
     return cell && !cell.get('ball') && !visitedCells.has(cell)
   }).sort((cellA, cellB) => {
     // Sort by distance to the `toCell`.
@@ -41,7 +41,7 @@ export function findShortestPath(fromCell: Cell, toCell: Cell, allCells: Cell[])
     if (!pathToFinalDestination || pathToFinalDestination.length > pathToCell.length + 1) {
       const neighbors = findNeighborsOf(cell, toCell, allCells, visitedCells)
 
-      neighbors.forEach((neighbor) => {
+      neighbors.forEach(neighbor => {
         const pathToNeighbor = foundPaths.get(neighbor)
         if (!pathToNeighbor || pathToNeighbor.length > pathToCell.length + 1) {
           foundPaths.set(neighbor, [...pathToCell, neighbor])
@@ -87,10 +87,10 @@ function findPath(fromCell: Cell, toCell: Cell, allCells: Cell[]): Cell[] {
 }
 
 export function clearTrace(runtime: Runtime) {
-  runtime.trace.forEach((cell) => cell.set('trace', null))
+  runtime.trace.forEach(cell => cell.set('trace', null))
   runtime.trace = []
 }
 
 export function drawTrace(runtime: Runtime, color: number) {
-  runtime.trace.forEach((cell) => cell.set('trace', color))
+  runtime.trace.forEach(cell => cell.set('trace', color))
 }

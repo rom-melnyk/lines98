@@ -1,18 +1,19 @@
 import * as constants from '../constants'
 import { Cell } from '../cell'
+import { GameHistory } from './history'
 
 export class Runtime {
+  public clicked: Cell = null
   public selected: Cell = null
   public trace: Cell[] = []
-  public lastSettled: Cell[] = []
-  public lastWipedCells: Cell[] = []
-  public lastWipedColor: number = null
-  public lastBallMove: [Cell, Cell] /* from, to */ = null
   public score = 0
 
+  public readonly history: GameHistory
+
   private readonly scoreElement: HTMLSpanElement
-  constructor() {
+  constructor(history: GameHistory) {
     this.scoreElement = document.querySelector('.stats-panel .score')
+    this.history = history
   }
 
   public updateScore(cellsWiped: number) {
@@ -33,21 +34,53 @@ export class Runtime {
     this.scoreElement.innerText = score
   }
 
+  public moveBall(fromCell: Cell, toCell: Cell) {
+    toCell.set('ball', fromCell.get('ball'))
+    fromCell.set('ball', null)
+    this.history.setBallMove(fromCell, toCell)
+  }
+
   public wipeCells(cells: Cell[]) {
-    this.lastWipedCells = cells
-    this.lastWipedColor = cells[0].get('ball')
-    cells.forEach((cell) => cell.set('ball', null))
+    this.history.setWipedCells(cells)
+    cells.forEach(cell => cell.set('ball', null))
     this.updateScore(cells.length)
   }
 
   public clearWipedFlag() {
-    this.lastWipedCells = []
-    this.lastWipedColor = null
+  }
+
+  public undo(allCells: Cell[]) {
+    const [fromCell, toCell] = this.history.lastBallMove ?? []
+    if (!fromCell || !toCell) return
+
+    // 1. Undo wipe
+    this.history.undoWipe()
+    this.updateScore(-this.history.lastWipedCells.length)
+    this.history.clearWipedCells()
+
+    // 2.Undo currently planned
+    allCells.forEach(cell => {
+      if (cell.get('planned')) cell.set('planned', null) }
+    )
+
+    // 3. Undo "previously planned -> balls" transition
+    this.history.undoPlannedToBalls()
+
+    // 4. Undo last ball move
+    this.moveBall(toCell, fromCell)
+    this.history.clearBallMove()
   }
 
   public undoWipe() {
-    this.lastWipedCells.forEach((cell) => cell.set('ball', this.lastWipedColor))
-    this.updateScore(-this.lastWipedCells.length)
-    this.clearWipedFlag()
+  }
+
+  public unselectCell(cell: Cell) {
+    cell.set('selected', null)
+    this.selected = null
+  }
+
+  public selectCell(cell: Cell) {
+    cell.set('selected', 1)
+    this.selected = cell
   }
 }

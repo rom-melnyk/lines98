@@ -1,30 +1,7 @@
 import * as constants from '../../constants'
 import { Cell } from '../../cell'
-import { Runtime } from '../runtime'
 import { getAt } from '../playground-utils'
 
-/**
- * IMPORTANT! `cell` is not always `runtime.selected`.
- */
-export function unselectCell(cell: Cell, runtime: Runtime) {
-  cell.set('selected', null)
-  runtime.selected = null
-}
-
-export function selectCell(cell: Cell, runtime: Runtime) {
-  cell.set('selected', 1)
-  runtime.selected = cell
-}
-
-export function moveBall(fromCell: Cell, toCell: Cell, runtime: Runtime) {
-  toCell.set('ball', fromCell.get('ball'))
-  fromCell.set('ball', null)
-  runtime.lastBallMove = [fromCell, toCell]
-}
-
-/**
- * Does not include current cell!
- */
 function followColorAlongLine(cell: Cell, allCells: Cell[], incX: -1 | 0 | 1, incY: -1 | 0 | 1): Cell[] {
   const result: Cell[] = []
   let { x, y } = cell
@@ -36,31 +13,35 @@ function followColorAlongLine(cell: Cell, allCells: Cell[], incX: -1 | 0 | 1, in
     y += incY
     nextCell = getAt(allCells, x, y)
     shouldContinue = nextCell && nextCell.get('ball') === cell.get('ball')
-    if (shouldContinue) {
-      result.push(nextCell)
-    }
+    if (shouldContinue) result.push(nextCell)
   } while (shouldContinue)
 
-  return result.length >= (constants.lineSize - 1) ? result : []
+  return result
 }
 
-export function findCellsToWipe(allCells: Cell[]): Cell[] {
-  const toWipe = new Set<Cell>()
+export function findCellsToWipe(cell: Cell, allCells: Cell[]): Cell[] {
+  if (!cell.get('ball')) return []
 
-  allCells
-    .filter((cell) => cell.get('ball'))
-    .forEach((cell) => {
-      const cellsWithSameColor = [].concat(
-        followColorAlongLine(cell, allCells, 1, 0),
-        followColorAlongLine(cell, allCells, 0, 1),
-        followColorAlongLine(cell, allCells, 1, 1),
-        followColorAlongLine(cell, allCells, -1, 1),
-      )
-      cellsWithSameColor.forEach((cellWithSameColor) => toWipe.add(cellWithSameColor))
-      if (cellsWithSameColor.length > 0) {
-        toWipe.add(cell)
-      }
-    })
+  const cellsWithSameColor = [
+    [cell].concat(
+      followColorAlongLine(cell, allCells, 1, 0),     // E
+      followColorAlongLine(cell, allCells, -1, 0),    // W
+    ),
+    [cell].concat(
+      followColorAlongLine(cell, allCells, 0, 1),     // S
+      followColorAlongLine(cell, allCells, 0, -1),    // N
+    ),
+    [cell].concat(
+      followColorAlongLine(cell, allCells, 1, 1),     // SE
+      followColorAlongLine(cell, allCells, -1, -1),   // NW
+    ),
+    [cell].concat(
+      followColorAlongLine(cell, allCells, -1, 1),    // SW
+      followColorAlongLine(cell, allCells, 1, -1),    // NE
+    ),
+  ]
+    .filter(cells => cells.length >= constants.lineSize)
+    .flat()
 
-  return Array.from(toWipe)
+  return Array.from(new Set(cellsWithSameColor)) // unique cells
 }

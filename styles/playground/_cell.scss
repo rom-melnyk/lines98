@@ -14,7 +14,7 @@
 
   @include as-button;
 
-  // ------ Ball, Drops ------
+  // ------ Ball, Planned ------
   &::before {
     content: "";
     display: block;
@@ -47,8 +47,8 @@
     100% { transform: scale($ball-size - .1); }
   }
 
-  // ------ Drops ------
-  &[drop]::before {
-    transform: scale($drop-ball-size);
+  // ------ Planned ------
+  &[planned]::before {
+    transform: scale($planned-ball-size);
   }
 }

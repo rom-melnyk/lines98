@@ -1,38 +1,38 @@
 import * as constants from './constants'
 
-type CellProperties = 'ball' | 'drop' | 'trace' | 'selected'
+type CellProperties = 'ball' | 'planned' | 'trace' | 'selected'
 
 export class Cell {
   public static fromSerialized(serialized: string) {
-    const [coordsMarker, ballMarker, dropMarker] = serialized.split('|')
+    const [coordsText, ballText, plannedText] = serialized.split('|')
 
-    const coords = coordsMarker.split(':')
+    const coords = coordsText.split(':')
     const x = Number(coords[0])
     const y = Number(coords[1])
     if (
       isNaN(x) || x < 0 || x >= constants.playgroundSize
       || isNaN(y) || y < 0 || y >= constants.playgroundSize
     ) {
-      throw new Error(`Invalid coordinates "${coordsMarker}"`)
+      throw new Error(`Invalid coordinates "${coordsText}"`)
     }
 
-    const ball = ballMarker ? Number(ballMarker) : null
+    const ball = ballText ? Number(ballText) : null
     if (ball !== null && constants.colors.indexOf(ball) === -1) {
-      throw new Error(`Unrecognized ball "${ballMarker}"`)
+      throw new Error(`Unrecognized ball "${ballText}"`)
     }
 
-    const drop = dropMarker ? Number(dropMarker) : null
-    if (drop !== null && constants.colors.indexOf(drop) === -1) {
-      throw new Error(`Unrecognized drop "${dropMarker}"`)
+    const planned = plannedText ? Number(plannedText) : null
+    if (planned !== null && constants.colors.indexOf(planned) === -1) {
+      throw new Error(`Unrecognized planned color "${plannedText}"`)
     }
 
-    return { x, y, ball, drop }
+    return { x, y, ball, planned }
   }
 
   private readonly htmlElement: HTMLDivElement
   private properties: { [key in CellProperties]: number } = {
     ball: null,
-    drop: null,
+    planned: null,
     trace: null,
     selected: null,
   }
@@ -49,11 +49,11 @@ export class Cell {
     return this.htmlElement
   }
 
-  public get(property: CellProperties): number {
+  public get(property: CellProperties): number | null {
     return this.properties[property]
   }
 
-  public set(property: CellProperties, value: number): void {
+  public set(property: CellProperties, value: number | null): void {
     if (value) {
       this.htmlElement.setAttribute(property, `${value}`)
     } else {
@@ -66,7 +66,7 @@ export class Cell {
   public serialize() {
     const coords = `${this.x}:${this.y}`
     const ball = this.get('ball') ? this.get('ball') : ''
-    const drop = this.get('drop') ? this.get('drop') : ''
-    return `${coords}|${ball}|${drop}`
+    const planned = this.get('planned') ? this.get('planned') : ''
+    return `${coords}|${ball}|${planned}`
   }
 }

@@ -18,16 +18,16 @@ ParcelJS compiles the code into `dist/` which is .gitignore-d.
 - A cell is implemented as simple `<div>` with `::before` pseudo-element responsible for the ball (if any).
 - Cell styling is foreseen for following states:
   - `<div class="cell" ball="...">` for a ball cell; it might have extra `selected` class as well.
-  - `<div class="cell" drop="...">` for a cell where the ball will be dropped at next move.
+  - `<div class="cell" planned="...">` for a cell where the ball will be dropped at next move.
   - `<div class="cell" trace="...">` for a cell that resides on the trace from selected one to hovered one.
-  - The value for `ball`, `drop` and `trace` attributes defines the color.
+  - The value for `ball`, `planned` and `trace` attributes defines the color.
     - All the colors are combined into _a palette;_ see `styles/playground/_palette.scss`.
 
 ### Logic
 
 - Each cell is represented as an  instance of `Cell` class; see `scripts/cell.ts`.
   - The instance of `Cell` class is tied to its HTML `<div>`.
-  - It contains the **state data** (ball color, future drop color, trace color) as well.
+  - It contains the **state data** (ball color, future planned color, trace color) as well.
   - Updating state parameters updates the HTML. Think "MVVM" pattern.
 - All the cells are stored in the (instance of) `Playground` class.
 - The **runtime data** (like score, history etc.) are stored in the instance of the `Runtime` class.

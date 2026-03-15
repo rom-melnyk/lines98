@@ -1,52 +1,69 @@
-import { FsmNames } from './names'
+export enum State {
+  GAME_OVER = 'game_over',
+  PLAN_NEW_BALLS = 'plan_new_balls',
+  AWAITING_USER_ACTION = 'awaiting_user_action',
+  BALL_CELL_CLICKED = 'ball_cell_clicked',
+  EMPTY_OR_PLANNED_CELL_CLICKED = 'empty_or_planned_cell_clicked',
+  UNDO = 'undo',
+  BALL_CAN_MOVE = 'ball_can_move',
+  BALL_MOVED = 'ball_moved',
+  TRY_SETTLE_PLANNED_BALLS = 'try_settle_planned_balls',
+  SETTLE_PLANNED_BALLS = 'settle_planned_balls',
+}
 
-type FsmState = () => FsmState | FsmNames
+type TransitionFn = () => State | null
 
 /**
- * Finite state machine implementation.
- * Each state is a function doing something and returning one of following:
- *   - next state,
- *   - next state name,
- *   - nothing (it means the "stable state" awaiting actions from the outer world).
+ * Finite State Machine (FSM) + transitions.
+ * Each state has a transition function. It's invoked when the state is entered.
+ * Transition function returns:
+ *   - next state name (means the state is transitory and showm must go on),
+ *   - `null` (means the state is "stable"; FSM reached the terminal point and awaiting actions from the outer world).
  */
 export class Fsm {
-  private states: Map<FsmNames, FsmState> = new Map()
+  private readonly stateTransitions: Map<State, TransitionFn> = new Map()
+  private _current = null as State | null
 
   constructor(
-    private debug = false,
+    private readonly debug = false,
   ) {}
 
-  public add(name: FsmNames, state: FsmState) {
+  public registerState(name: State, transitionFn: TransitionFn) {
     if (!name) {
       throw new Error(`Cannot add nameless FSM entity.`)
     }
 
-    if (this.states.get(name)) {
-      throw new Error(`FSM entity "${name}" already exists.`)
+    if (this.stateTransitions.get(name)) {
+      throw new Error(`State "${name}" already registered.`)
     }
 
-    this.states.set(name, state)
+    this.stateTransitions.set(name, transitionFn)
   }
 
-  public goTo(state: FsmState | FsmNames) {
-    const stateToGo: FsmState = typeof state === 'string' ? this.states.get(state) : state
+  public get currentState(): State { return this._current }
 
-    if (!stateToGo) {
-      if (this.debug) {
-        console.info('FSM: stable state; awaiting actions from outer world.')
-      }
+  public goTo(nextState: State) {
+    if (!this.stateTransitions.has(nextState)) {
+      console.error(`FSM: the state "${nextState}" was not registered`)
       return
     }
 
-    if (this.debug) {
-      const nameEntry = Array.from(
-        this.states.entries()
-      ).find(([n, s]) => s === stateToGo)
-      const name = nameEntry && nameEntry[0]
-      console.info(`FSM: At state "${name}"`)
-    }
+    let state = nextState
+    do {
+      this._current = state
+      if (this.debug) {
+        console.info(`FSM: entered "${state}"; executing transition…`)
+      }
 
-    // Use `setTimeout(() => this.goTo(stateToGo()), 0)` in case in Stack overflow.
-    this.goTo(stateToGo())
+      const transitionFn = this.stateTransitions.get(state)
+      state = transitionFn()
+      if (this.debug) {
+        console.info(state
+          ? `     ↳ transiting to "${state}"`
+          : `     ↳ settled; awaiting user action`
+        )
+      }
+    } while (state != null)
   }
 }
+
