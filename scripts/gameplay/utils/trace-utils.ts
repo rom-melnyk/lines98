@@ -1,6 +1,6 @@
 import { getAt } from './playground-utils'
-import { Cell } from '../cell'
-import { Runtime } from './runtime'
+import { Cell } from '../../cell'
+import { Runtime } from '../runtime'
 
 function getDistanceBetween(cellA: Cell, cellB: Cell): number {
   const dx = cellA.x - cellB.x

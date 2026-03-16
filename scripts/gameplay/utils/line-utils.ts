@@ -1,6 +1,6 @@
 import * as constants from '../../constants'
 import { Cell } from '../../cell'
-import { getAt } from '../playground-utils'
+import { getAt } from './playground-utils'
 
 function followColorAlongLine(cell: Cell, allCells: Cell[], incX: -1 | 0 | 1, incY: -1 | 0 | 1): Cell[] {
   const result: Cell[] = []

@@ -4,12 +4,15 @@ import { Cell } from '../cell'
 
 import { Fsm, State } from './fsm/fsm'
 
-import { clearTrace, drawTrace, findShortestPath } from './trace-utils'
-import { planNewBalls, } from './state-transitions/plan-new-balls'
-import { separatePlannedFromExistingBalls } from './state-transitions/try-settle-planned-balls'
-import { settlePlannedBalls } from './state-transitions/settle-planned-balls'
-import { loadGame } from './operations/load-save-operations'
-import { findCellsToWipe } from './operations/ball-operations'
+import * as constants from '../constants'
+import { clearTrace, drawTrace, findShortestPath } from './utils/trace-utils'
+import { planNewBalls, } from './operations/plan-new-balls'
+import {
+  separatePlannedFromExistingBalls,
+  settlePlannedBalls
+} from './operations/settle-planned-balls'
+import { loadGame, saveGame } from './operations/load-save-operations'
+import { findCellsToWipe } from './utils/line-utils'
 
 export class Gameplay {
   private readonly fsm = new Fsm()
@@ -38,7 +41,7 @@ export class Gameplay {
     } else {
       // Start new game by placing 3 balls
       this.fsm.goTo(State.PLAN_NEW_BALLS)
-      this.fsm.goTo(State.TRY_SETTLE_PLANNED_BALLS)
+      this.fsm.goTo(State.SETTLE_PLANNED_BALLS)
     }
   }
 
@@ -69,15 +72,26 @@ export class Gameplay {
   private setupFSM() {
     this.fsm.registerState(State.GAME_OVER, () => null)
 
-    this.fsm.registerState(State.PLAN_NEW_BALLS, () => planNewBalls(this.playground.cells, this.runtime))
+    this.fsm.registerState(State.PLAN_NEW_BALLS, () => {
+      const availableCells = this.playground.cells.filter(cell => !cell.get('ball'))
+      if (availableCells.length < constants.ballsPerDrop) return State.GAME_OVER
+
+      planNewBalls(availableCells)
+      saveGame(this.playground.cells, this.runtime)
+      return State.AWAITING_USER_ACTION
+    })
+
     this.fsm.registerState(State.AWAITING_USER_ACTION, () => null)
+
     this.fsm.registerState(State.UNDO, () => {
       this.runtime.undo(this.playground.cells)
       return State.PLAN_NEW_BALLS
     })
+
     this.fsm.registerState(State.BALL_CELL_CLICKED, () => {
       const cell = this.runtime.clicked
       if (!cell) return
+      this.runtime.clicked = null
 
       if (cell.get('selected')) this.runtime.unselectCell(cell)
       else {
@@ -87,28 +101,39 @@ export class Gameplay {
 
       return State.AWAITING_USER_ACTION
     })
+
     this.fsm.registerState(State.EMPTY_OR_PLANNED_CELL_CLICKED, () => {
       return (this.runtime.selected && this.runtime.trace.length > 0)
         ? State.BALL_CAN_MOVE
         : State.AWAITING_USER_ACTION
     })
+
     this.fsm.registerState(State.BALL_CAN_MOVE, () => {
-        this.runtime.moveBall(this.runtime.selected, this.runtime.clicked)
-        this.runtime.unselectCell(this.runtime.selected)
-        clearTrace(this.runtime)
+      this.runtime.moveBall(this.runtime.selected, this.runtime.clicked)
+      this.runtime.unselectCell(this.runtime.selected)
+      clearTrace(this.runtime)
 
       return State.BALL_MOVED
     })
+
     this.fsm.registerState(State.BALL_MOVED, () => {
-      const cellsToWipe = findCellsToWipe(this.runtime.clicked, this.playground.cells)
+      const lastMoveDestination = this.runtime.clicked
+      if (!lastMoveDestination) return
+      this.runtime.clicked = null
+
+      const cellsToWipe = findCellsToWipe(lastMoveDestination, this.playground.cells)
       if (cellsToWipe.length > 0) {
         this.runtime.wipeCells(cellsToWipe)
         return State.AWAITING_USER_ACTION
       } else {
-        return State.TRY_SETTLE_PLANNED_BALLS
+        return State.SETTLE_PLANNED_BALLS
       }
     })
-    this.fsm.registerState(State.TRY_SETTLE_PLANNED_BALLS, () => separatePlannedFromExistingBalls(this.playground.cells))
-    this.fsm.registerState(State.SETTLE_PLANNED_BALLS, () => settlePlannedBalls(this.playground.cells, this.runtime))
+
+    this.fsm.registerState(State.SETTLE_PLANNED_BALLS, () => {
+      separatePlannedFromExistingBalls(this.playground.cells)
+      settlePlannedBalls(this.playground.cells, this.runtime)
+      return State.PLAN_NEW_BALLS
+    })
   }
 }

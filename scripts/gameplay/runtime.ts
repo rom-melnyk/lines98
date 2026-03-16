@@ -46,9 +46,6 @@ export class Runtime {
     this.updateScore(cells.length)
   }
 
-  public clearWipedFlag() {
-  }
-
   public undo(allCells: Cell[]) {
     const [fromCell, toCell] = this.history.lastBallMove ?? []
     if (!fromCell || !toCell) return

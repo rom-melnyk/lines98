@@ -1,6 +1,6 @@
 import { Runtime } from '../runtime'
 import { Cell } from '../../cell'
-import { getAt } from '../playground-utils'
+import { getAt } from '../utils/playground-utils'
 
 const localStorageKey = 'Lines98'
 

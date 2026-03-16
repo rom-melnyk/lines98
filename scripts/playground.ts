@@ -19,7 +19,7 @@ export class Playground {
     }
   }
 
-  public setPalette(palette: number): void {
+  private setPalette(palette: number): void {
     this.htmlElement.classList.remove(`palette-${this.palette}`)
     this.palette = palette
     this.htmlElement.classList.add(`palette-${palette}`)

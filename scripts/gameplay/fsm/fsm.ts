@@ -7,7 +7,6 @@ export enum State {
   UNDO = 'undo',
   BALL_CAN_MOVE = 'ball_can_move',
   BALL_MOVED = 'ball_moved',
-  TRY_SETTLE_PLANNED_BALLS = 'try_settle_planned_balls',
   SETTLE_PLANNED_BALLS = 'settle_planned_balls',
 }
 
