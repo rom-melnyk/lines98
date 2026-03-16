@@ -1,20 +1,57 @@
 @use "config" as *;
 
-header.stats-panel {
-  @include header-footer($header-height);
+header {
+  @include header-footer(/* $header-height */);
+  margin-top: 2rem;
+  margin-bottom: .5rem;
+
+  @media (orientation: landscape) and (max-height: $small-screen) {
+    margin-top: .5rem;
+  }
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 0 10px $cell-border-color;
+  }
+
+  .undo-and-score {
+    @include flex-row();
+  }
 
   .undo {
-    float: left;
-    padding: 0 1rem;
-    font-size: 1rem;
+    height: 2rem;
+    min-width: 2rem;
+    text-align: center;
+    line-height: 2rem;
+    padding: 0;
+    font-size: 1.25rem;
+    vertical-align: middle;
+    margin-right: 1rem;
     color: $cell-border-color;
     cursor: pointer;
 
     @include as-button;
+    border-radius: 2rem;
+  }
+
+  @media (min-height: $small-screen) and (min-width: $small-screen) {
+    .undo {
+      margin-right: 2rem;
+      padding: 0 1rem;
+
+      &::after {
+        content: "Undo";
+        padding-left: .5rem;
+        font-size: 1rem;
+        vertical-align: .1em;
+      }
+    }
   }
 
   .score {
-    float: right;
+    font-size: 2rem;
     font-family: monospace;
     font-weight: bold;
     color: $cell-border-color;

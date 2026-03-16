@@ -1,10 +1,10 @@
 @use "sass:color";
 
-$header-height: 4rem; // 2rem of top/bottom padding + 2rem of line-height
-$footer-height: 2rem; // same but half-way
+$font-size: 18px;
 
-// Perfectly fine for vertically oriented viewports with `H >= 90vw + $header-height + $footer-height + .5rem`;
+// Perfectly fine for vertically oriented viewports with `H >= 90vw + room for header/footer`;
 $playground-width: 80vmin;
+$small-screen: 28rem;
 
 $cell-margin-ratio: .05;
 $cells-in-row: 9;
@@ -12,13 +12,14 @@ $cells-in-row: 9;
 $cell-size: calc($playground-width / ($cells-in-row * (1 + 2 * $cell-margin-ratio)));
 
 $cell-border-color: #bbb;
+$link-color: hsl(200, 70%, 35%);
+$ui-interaction-transition: .2s ease-in-out;
 
 $ball-size: .9;
 $planned-ball-size: .2;
 
 @mixin as-button {
-  $highlight_color: color.adjust($cell-border-color, $lightness: 20%);
-  $highlight_transition: .2s ease-in-out;
+  $highlight-color: color.adjust($cell-border-color, $lightness: 20%);
 
   border-radius: 2 * $cell-size * $cell-margin-ratio;
   user-select: none;
@@ -26,23 +27,32 @@ $planned-ball-size: .2;
   border: 1px dotted $cell-border-color;
   background-color: transparent;
   transition:
-    background-color $highlight_transition,
-    border-color $highlight_transition;
+    background-color $ui-interaction-transition,
+    border-color $ui-interaction-transition;
 
   &:hover {
-    border-color: $highlight_color;
-    background-color: $highlight_color;
+    border-color: $highlight-color;
+    background-color: $highlight-color;
   }
 }
 
-@mixin header-footer($height) {
-  height: $height;
-  padding: calc($height / 4) 0;
-  line-height: calc($height / 2);
-  font-size: calc($height / 2);
-  vertical-align: middle;
+@mixin flex-row {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+}
 
-  & * {
-    line-height: calc($height / 2);
+@mixin header-footer() {
+  @include flex-row();
+  justify-content: space-between;
+
+  width: $playground-width - 2 * $cell-size * $cell-margin-ratio;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@mixin landscape-phone {
+  @media (orientation: landscape) and (max-height: 28rem) {
+    @content;
   }
 }

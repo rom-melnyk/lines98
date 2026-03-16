@@ -1,22 +1,15 @@
 @use "config" as *;
 
 footer.footer {
-  @include header-footer($footer-height);
+  @include header-footer(/* $footer-height */);
 
-  & * {
-    font-size: .5rem;
-    color: $cell-border-color;
-  }
+  font-size: .75rem;
+  margin-top: .5rem;
+  margin-bottom: .5rem;
 
-  .help {
-    float: left;
-  }
+  .help {}
 
   .credits {
-    float: right;
-
-    a {
-      color: #028;
-    }
+    color: $cell-border-color;
   }
 }
