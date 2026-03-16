@@ -42,7 +42,10 @@ export class Runtime {
 
   public wipeCells(cells: Cell[]) {
     this.history.setWipedCells(cells)
-    cells.forEach(cell => cell.set('ball', null))
+    cells.forEach(cell => {
+      cell.set('wipe-animating', null)
+      cell.set('ball', null)
+    })
     this.updateScore(cells.length)
   }
 

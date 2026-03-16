@@ -52,11 +52,23 @@
     transform: scale($planned-ball-size);
   }
 
+  // ------ Wipe animation ------
+  // Durations must match the WIPE_DURATION_MS (170ms) in `wipe-utils.ts`
+  &[ball][wipe-animating]::before {
+    animation: wipe-ball 170ms ease-in forwards;
+  }
+
+  @keyframes wipe-ball {
+    0%   { transform: scale($ball-size); filter: brightness(1); }
+    35%  { transform: scale(1.05);       filter: brightness(2.5); }
+    100% { transform: scale(0);          filter: brightness(1); }
+  }
+
   // ------ Trace animation ------
-  // STEP_MS = 20ms — must match the constant in trace-utils.ts
+  // Durations must match the values in `trace_utils.ts`
   &[trace-animating] {
-    animation: trace-pulse 60ms ease-out both;
-    animation-delay: calc(var(--trace-index) * 20ms);
+    animation: trace-pulse 60ms /* CELL_ANIM_STEPS * STEP_MS */ ease-out both;
+    animation-delay: calc(var(--trace-index) * 20ms /* STEP_MS */);
   }
 
   @keyframes trace-pulse {

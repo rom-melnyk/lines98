@@ -6,6 +6,7 @@ import { Fsm, State } from './fsm/fsm'
 
 import * as constants from '../constants'
 import { animateTrace, clearTrace, drawTrace, findShortestPath } from './utils/trace-utils'
+import { animateWipe } from './utils/wipe-utils'
 import { planNewBalls, } from './operations/plan-new-balls'
 import {
   separatePlannedFromExistingBalls,
@@ -138,8 +139,14 @@ export class Gameplay {
 
       const cellsToWipe = findCellsToWipe(lastMoveDestination, this.playground.cells)
       if (cellsToWipe.length > 0) {
-        this.runtime.wipeCells(cellsToWipe)
-        return State.AWAITING_USER_ACTION
+        const duration = animateWipe(cellsToWipe)
+        this.isAnimating = true
+        setTimeout(() => {
+          this.isAnimating = false
+          this.runtime.wipeCells(cellsToWipe)
+          this.fsm.goTo(State.AWAITING_USER_ACTION)
+        }, duration)
+        return null
       } else {
         return State.SETTLE_PLANNED_BALLS
       }

@@ -1,6 +1,12 @@
 import * as constants from './constants'
 
-type CellProperties = 'ball' | 'planned' | 'trace' | 'selected' | 'trace-animating'
+type CellProperties =
+  | 'ball'
+  | 'planned'
+  | 'trace'
+  | 'selected'
+  | 'trace-animating'
+  | 'wipe-animating'
 
 export class Cell {
   public static fromSerialized(serialized: string) {
@@ -36,6 +42,7 @@ export class Cell {
     trace: null,
     selected: null,
     'trace-animating': null,
+    'wipe-animating': null,
   }
 
   constructor(
