@@ -51,4 +51,17 @@
   &[planned]::before {
     transform: scale($planned-ball-size);
   }
+
+  // ------ Trace animation ------
+  // STEP_MS = 20ms — must match the constant in trace-utils.ts
+  &[trace-animating] {
+    animation: trace-pulse 60ms ease-out both;
+    animation-delay: calc(var(--trace-index) * 20ms);
+  }
+
+  @keyframes trace-pulse {
+    0%   { filter: brightness(1); }
+    40%  { filter: brightness(2.2); }
+    100% { filter: brightness(1); }
+  }
 }

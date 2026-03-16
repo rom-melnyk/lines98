@@ -5,7 +5,7 @@ import { Cell } from '../cell'
 import { Fsm, State } from './fsm/fsm'
 
 import * as constants from '../constants'
-import { clearTrace, drawTrace, findShortestPath } from './utils/trace-utils'
+import { animateTrace, clearTrace, drawTrace, findShortestPath } from './utils/trace-utils'
 import { planNewBalls, } from './operations/plan-new-balls'
 import {
   separatePlannedFromExistingBalls,
@@ -16,6 +16,7 @@ import { findCellsToWipe } from './utils/line-utils'
 
 export class Gameplay {
   private readonly fsm = new Fsm()
+  private isAnimating = false
 
   constructor(
     public runtime: Runtime,
@@ -47,6 +48,7 @@ export class Gameplay {
 
   private createMouseClickHandler(cell: Cell) {
     return () => {
+      if (this.isAnimating) return
       this.runtime.clicked = cell
       if (cell.get('ball')) this.fsm.goTo(State.BALL_CELL_CLICKED)
       else this.fsm.goTo(State.EMPTY_OR_PLANNED_CELL_CLICKED)
@@ -55,6 +57,7 @@ export class Gameplay {
 
   private createMouseOverHandler(cell: Cell) {
     return () => {
+      if (this.isAnimating) return
       if (!this.runtime.selected) return
 
       clearTrace(this.runtime)
@@ -109,17 +112,29 @@ export class Gameplay {
     })
 
     this.fsm.registerState(State.BALL_CAN_MOVE, () => {
-      this.runtime.moveBall(this.runtime.selected, this.runtime.clicked)
-      this.runtime.unselectCell(this.runtime.selected)
-      clearTrace(this.runtime)
+      const from = this.runtime.selected
+      const to = this.runtime.clicked
+      const duration = animateTrace(this.runtime)
 
-      return State.BALL_MOVED
+      this.isAnimating = true
+      setTimeout(() => {
+        this.isAnimating = false
+        this.runtime.selected = from
+        this.runtime.clicked = to
+        this.fsm.goTo(State.BALL_MOVED)
+      }, duration)
+
+      return null
     })
 
     this.fsm.registerState(State.BALL_MOVED, () => {
       const lastMoveDestination = this.runtime.clicked
       if (!lastMoveDestination) return
       this.runtime.clicked = null
+
+      this.runtime.moveBall(this.runtime.selected, lastMoveDestination)
+      this.runtime.unselectCell(this.runtime.selected)
+      clearTrace(this.runtime)
 
       const cellsToWipe = findCellsToWipe(lastMoveDestination, this.playground.cells)
       if (cellsToWipe.length > 0) {

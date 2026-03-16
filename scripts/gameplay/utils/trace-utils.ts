@@ -87,8 +87,21 @@ function findPath(fromCell: Cell, toCell: Cell, allCells: Cell[]): Cell[] {
 }
 
 export function clearTrace(runtime: Runtime) {
-  runtime.trace.forEach(cell => cell.set('trace', null))
+  runtime.trace.forEach(cell => {
+    cell.set('trace', null)
+    cell.set('trace-animating', null)
+  })
   runtime.trace = []
+}
+
+const STEP_MS = 20
+const CELL_ANIM_STEPS = 3 // must match the animation duration in _cell.scss (STEP_MS * CELL_ANIM_STEPS = 60ms)
+
+export function animateTrace(runtime: Runtime): number {
+  runtime.trace.forEach((cell, index) => {
+    cell.set('trace-animating', index)
+  })
+  return (runtime.trace.length + CELL_ANIM_STEPS - 1) * STEP_MS
 }
 
 export function drawTrace(runtime: Runtime, color: number) {

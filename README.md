@@ -35,29 +35,34 @@ ParcelJS compiles the code into `dist/` which is .gitignore-d.
 So in order to understand what's currently on we need _all cells_ and the _runtime instance._ This pair of parameters is often passed to multiple functions.
 
 Both (instances of) `Playground` and `Runtime` classes are used by the `Gameplay` class.
-- It uses the [FSM](https://en.wikipedia.org/wiki/Finite-state_machine) for game states and transitions between them. See `scripts/gameplay/fsm/`. It contains text schema and the FSM implementation.
+- It uses the [FSM](https://en.wikipedia.org/wiki/Finite-state_machine) for game states and transitions between them. Check the `scripts/gameplay/fsm/`.
 - There are following concepts used:
-  - **Opearations** mutate the state/runtime in "atomic" (often undoable) manner.
-  - **Actions** are sequences of operations wrapped into some logic. They are FSM entities (see below).
-  - **UI handlers** invoke some FSM "entry points". They are the way to run the flow again after automaton hit the stable (final) state.
-     Mouse click handlers are perfect examples here.
+  - FSM states are associated with actions, triggered upon entering the state.
+  - The actions can return
+    - another state (which implies transition to appropriate state),
+    - `null` (implies "stable" state; the FSM awaits user input).
+  - **Opearations** mutate the runtime in "atomic" (often undoable) manner.
+    State actions contain of operations:
+    ```ts
+    fsm.registerState('clicked_on_cell', () => {
+      operation_1()
+      if (runtime.condition) operation_2()
+      return 'next_state'
+    })
+    ```
+  - **UI handlers** (mouse clicks and `Ctrl-Z` listener) invoke appropriate FSM states directly.They are the way to run the flow again after automaton hit the stable (final) state.
 - The gameplay data (score + cell setup) is stored on each move in the local storage. Reloading the page automatically loads last game.
 
 #### FSM
 
-The FSM is realized as map of states which have unique name and are functions per se.
-
-Once runned they might return
-- Another "state" or its name. This means the state is transitional and automaton continues the flow.
-- Nothing / `void`. This means that the sate is stable (final) and automaton stops here.
-
-The FSM states might be invoked from the outer world (e.g.,  by `gameplay.init()` or by mouse click). FSM runs from invoked state to the stable (final) one (unless looped).
+The FSM is a map of actions associated with human-friendly names. \
+Once entered, the FSM states might cause transition to another state or might reach the final (stable) state. In that case, external invocatio (e.g., via user action) re-runs the FSM again.
 
 For current purposes there was no need to implement _asynchronous FSM flow._ However it's good practice in general because it's pretty easy to hit `RangeError: "Maximum call size exceeded"` with cyclic transitions.
 
 #### Finding shortest path
 
-In order to find shortest path from selected cell to hovered one the modified [Dijkstra's algorithm](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm) is used. See `scripts/gameplay/trace-utils.ts`.
+In order to find shortest path from selected cell to hovered one the modified [Dijkstra's algorithm](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm) is used. See `scripts/gameplay/utils/trace-utils.ts`.
 - Instead of assigning the minimal _tentative distance_ (sic) to each node the _shortest path_ is assigned. The principle remains (path length is semantically equal to the "distance" as each edge has weight of 1).
 - The "neighbors" are pre-sorted by distance to destination cell (it might look expensive but we perform that operation only when necessary and for maximum four cells).
 - After _any path_ to destination cell has been found the altorithm won't continue with paths which are _already_ of same length or longer (because they cannot deliver shorter solution).

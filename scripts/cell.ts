@@ -1,6 +1,6 @@
 import * as constants from './constants'
 
-type CellProperties = 'ball' | 'planned' | 'trace' | 'selected'
+type CellProperties = 'ball' | 'planned' | 'trace' | 'selected' | 'trace-animating'
 
 export class Cell {
   public static fromSerialized(serialized: string) {
@@ -35,6 +35,7 @@ export class Cell {
     planned: null,
     trace: null,
     selected: null,
+    'trace-animating': null,
   }
 
   constructor(
@@ -54,10 +55,16 @@ export class Cell {
   }
 
   public set(property: CellProperties, value: number | null): void {
-    if (value) {
+    if (value != null) {
       this.htmlElement.setAttribute(property, `${value}`)
+      if (property === 'trace-animating') {
+        this.htmlElement.style.setProperty('--trace-index', `${value}`)
+      }
     } else {
       this.htmlElement.removeAttribute(property)
+      if (property === 'trace-animating') {
+        this.htmlElement.style.removeProperty('--trace-index')
+      }
     }
 
     this.properties[property] = value
