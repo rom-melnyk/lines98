@@ -13,14 +13,47 @@
   <header class="stats-panel">
     <div class="logo">Lines '98</div>
     <div class="undo-and-score">
-      <div class="undo" title="Ctrl-Z works as well">&olarr;</div>
+      <button class="undo" title="Ctrl-Z works as well" data-icon="&olarr;" data-text="Undo"></button>
       <div class="score">00000</div>
     </div>
   </header>
   <div class="playground"></div>
   <footer class="footer">
-    <div class="help link">How to play?</div>
+    <div class="link how-to">How to play?</div>
     <div class="credits">&copy; <a href="https://melnyk.site" tabindex="-1">Roman Melnyk</a></div>
   </footer>
+
+  <dialog class="how-to">
+    <h2>How to play</h2>
+    <p>
+      Select a ball.
+      <br/>Then click on a cell you'd like to move it.
+    </p>
+    <p>
+      Build a horizontal, vertical or diagonal line of the same color.
+      The line of 5 or more balls disappears.
+    </p>
+    <p>
+      With each move, 3 new balls are spawned,&nbsp;— unless you've wiped a line.
+    </p>
+    <p>
+      Stay put as long as possible.
+      <br/>Good luck!
+    </p>
+    <div class="footer">
+      <button class="close" autofocus aria-label="Close" data-icon="&checkmark;" data-text="Got it"></button>
+    </div>
+  </dialog>
+
+  <dialog class="game-over">
+    <h2>Game over 😐</h2>
+    <p>
+      Congratulations!
+      <br/>Your score is <span class="score">00000</span>.
+    </p>
+    <div class="footer">
+      <button class="close" autofocus aria-label="Close" data-icon="&olarr;" data-text="Restart"></button>
+  </div>
+  </dialog>
 </body>
 </html>

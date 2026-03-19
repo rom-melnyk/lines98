@@ -1,9 +1,11 @@
 @use "config" as *;
 
 header {
-  @include header-footer(/* $header-height */);
+  @include header-footer();
   margin-top: 2rem;
-  margin-bottom: .5rem;
+  margin-bottom: 1rem;
+
+  user-select: none;
 
   @media (orientation: landscape) and (max-height: $small-screen) {
     margin-top: .5rem;
@@ -12,8 +14,16 @@ header {
   .logo {
     font-size: 1.5rem;
     font-weight: 900;
-    color: #fff;
-    text-shadow: 0 0 10px $cell-border-color;
+    color: $bg-color;
+    text-shadow:
+      0 0 1rem $light-color,
+      0 0 .25rem $mid-color;
+  }
+
+  @include large-screen() {
+    .logo {
+      font-size: 2rem;
+    }
   }
 
   .undo-and-score {
@@ -21,39 +31,34 @@ header {
   }
 
   .undo {
-    height: 2rem;
-    min-width: 2rem;
-    text-align: center;
-    line-height: 2rem;
-    padding: 0;
-    font-size: 1.25rem;
-    vertical-align: middle;
+    // Mobile-first styling for the "↺" arrow:
+    // it's textless icon-only on small screens
     margin-right: 1rem;
-    color: $cell-border-color;
-    cursor: pointer;
 
-    @include as-button;
-    border-radius: 2rem;
+    &::after {
+      display: none;
+    }
   }
 
-  @media (min-height: $small-screen) and (min-width: $small-screen) {
+  @include large-screen() {
+    // The "↺" becomes "↺ Undo" on bigger screens
     .undo {
       margin-right: 2rem;
-      padding: 0 1rem;
 
       &::after {
-        content: "Undo";
-        padding-left: .5rem;
-        font-size: 1rem;
-        vertical-align: .1em;
+        display: inline;
       }
     }
   }
 
   .score {
-    font-size: 2rem;
+    font-size: 2.0rem;
     font-family: monospace;
     font-weight: bold;
-    color: $cell-border-color;
+    color: $mid-color;
+
+    @include large-screen() {
+      font-size: 2.5rem;
+    }
   }
 }

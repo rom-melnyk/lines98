@@ -1,40 +1,28 @@
 @use "sass:color";
 
-$font-size: 18px;
+$font-size: 14px;
 
-// Perfectly fine for vertically oriented viewports with `H >= 90vw + room for header/footer`;
+// Fine for portrait viewports with `H >= 90vw`.
+// Leaves room for header/footer in landscape orientation.
 $playground-width: 80vmin;
-$small-screen: 28rem;
+$small-screen: 30rem; // Around 400px
 
 $cell-margin-ratio: .05;
 $cells-in-row: 9;
 
 $cell-size: calc($playground-width / ($cells-in-row * (1 + 2 * $cell-margin-ratio)));
 
-$cell-border-color: #bbb;
-$link-color: hsl(200, 70%, 35%);
+$bg-color: #fff;
+$dark-color: #101010ff;
+$mid-color: color.adjust($dark-color, $lightness: 50%);
+$light-color: color.adjust($dark-color, $lightness: 75%);
+$lighter-color: color.adjust($light-color, $lightness: 13%);
+$link-color: hsla(200, 70%, 35%, 1);
+
 $ui-interaction-transition: .2s ease-in-out;
 
 $ball-size: .9;
 $planned-ball-size: .2;
-
-@mixin as-button {
-  $highlight-color: color.adjust($cell-border-color, $lightness: 20%);
-
-  border-radius: 2 * $cell-size * $cell-margin-ratio;
-  user-select: none;
-
-  border: 1px dotted $cell-border-color;
-  background-color: transparent;
-  transition:
-    background-color $ui-interaction-transition,
-    border-color $ui-interaction-transition;
-
-  &:hover {
-    border-color: $highlight-color;
-    background-color: $highlight-color;
-  }
-}
 
 @mixin flex-row {
   display: flex;
@@ -51,8 +39,8 @@ $planned-ball-size: .2;
   margin-right: auto;
 }
 
-@mixin landscape-phone {
-  @media (orientation: landscape) and (max-height: 28rem) {
+@mixin large-screen {
+  @media (min-height: $small-screen) and (min-width: $small-screen) {
     @content;
   }
 }

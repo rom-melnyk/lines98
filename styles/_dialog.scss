@@ -1,0 +1,30 @@
+@use "sass:color";
+@use "config" as *;
+
+dialog {
+  border: 1px solid $light-color;
+  border-radius: 2 * $cell-size * $cell-margin-ratio;
+  padding: 1.5rem 2rem;
+  max-width: min(90vw, $small-screen);
+  background: $bg-color;
+  box-shadow: 0 0 10 $light-color;
+
+  &::backdrop {
+    background-color: color.adjust($light-color, $alpha: -.25);
+    backdrop-filter: blur(.5rem);
+  }
+
+  h2 {
+    margin-bottom: 1rem;
+  }
+
+  p:not(:last-child) {
+    margin: 0 0 .75rem;
+    line-height: 1.25;
+  }
+
+  .footer {
+    margin-top: 1.5rem;
+    text-align: center;
+  }
+}

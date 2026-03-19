@@ -12,7 +12,19 @@
   height: $cell-size;
   margin: $cell-size * $cell-margin-ratio;
 
-  @include as-button;
+  user-select: none;
+
+  border-radius: 2 * $cell-size * $cell-margin-ratio;
+  border: 1px dotted $light-color;
+  background-color: transparent;
+  transition:
+    background-color $ui-interaction-transition,
+    border-color $ui-interaction-transition;
+
+  &:hover {
+    border-color: $lighter-color;
+    background-color: $lighter-color;
+  }
 
   // ------ Ball, Planned ------
   &::before {

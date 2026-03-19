@@ -12,11 +12,12 @@ html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  color: $dark-color;
+  font-size: $font-size;
 }
 
 body {
   font-family: sans-serif;
-  font-size: $font-size;
 }
 
 a, .link {
@@ -26,5 +27,66 @@ a, .link {
 
   &:hover, &:active, &:focus {
     color: color.adjust($link-color, $saturation: -10%, $lightness: -10%);
+  }
+}
+
+h1, h2, h3, h4 {
+  font-weight: normal;
+  margin: 0;
+}
+
+h1 { font-size: 2rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.25rem; }
+
+button {
+  --btn-height: 1.65rem;
+
+  @include large-screen() {
+    --btn-height: 2rem;
+  }
+
+  height: var(--btn-height);
+  min-width: var(--btn-height);
+  font-size: calc(var(--btn-height) / 2);
+  line-height: var(--btn-height);
+  text-align: center;
+  vertical-align: middle;
+  padding: 0;
+
+  cursor: pointer;
+
+  color: $mid-color;
+  background-color: transparent;
+  border: 1.5px solid $mid-color;
+  border-radius: var(--btn-height);
+  outline: none 0;
+
+  transition:
+    background-color $ui-interaction-transition;
+
+  &:hover {
+    border-color: $mid-color;
+    background-color: $lighter-color;
+    color: $mid-color;
+  }
+
+  display: inline-flex;
+  flex-flow: row nowrap;
+  align-items: center;
+
+  &[data-icon]::before {
+    content: attr(data-icon);
+    font-size: calc(var(--btn-height) / 1.5);
+  }
+
+  &[data-text] {
+    padding: 0 1.5rem;
+
+    &::after {
+      content: attr(data-text);
+      padding-left: .5rem;
+      font-size: calc(var(--btn-height) / 2);
+    }
   }
 }

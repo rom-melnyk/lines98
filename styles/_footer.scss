@@ -1,15 +1,13 @@
 @use "config" as *;
 
 footer.footer {
-  @include header-footer(/* $footer-height */);
+  @include header-footer();
 
   font-size: .75rem;
-  margin-top: .5rem;
+  margin-top: 1rem;
   margin-bottom: .5rem;
 
-  .help {}
-
-  .credits {
-    color: $cell-border-color;
+  @media (orientation: landscape) and (max-height: $small-screen) {
+    margin-top: .5rem;
   }
 }
