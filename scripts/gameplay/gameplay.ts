@@ -14,14 +14,16 @@ import {
 } from './operations/settle-planned-balls'
 import { loadGame, saveGame } from './operations/load-save-operations'
 import { findCellsToWipe } from './utils/line-utils'
+import { GameHistory } from './history'
 
 export class Gameplay {
   private readonly fsm = new Fsm()
   private isAnimating = false
 
   constructor(
-    public runtime: Runtime,
-    public playground: Playground,
+    public readonly runtime: Runtime,
+    public readonly playground: Playground,
+    public readonly history: GameHistory,
   ) {
     this.playground.cells.forEach(cell => {
       cell.getHtmlElement().addEventListener('click', this.createMouseClickHandler(cell))
@@ -69,7 +71,10 @@ export class Gameplay {
 
   private createKeypressHandler() {
     return (e: KeyboardEvent) => {
-      if (e.ctrlKey && (e.key === 'z' || e.key === 'Z')) this.fsm.goTo(State.UNDO)
+      if (
+        (e.ctrlKey || e.metaKey)
+        && (e.key === 'z' || e.key === 'Z' || e.key === '\x1a')
+      ) this.fsm.goTo(State.UNDO)
     }
   }
 
@@ -88,6 +93,7 @@ export class Gameplay {
     this.fsm.registerState(State.AWAITING_USER_ACTION, () => null)
 
     this.fsm.registerState(State.UNDO, () => {
+      if (!this.history.lastBallMove) return
       this.runtime.undo(this.playground.cells)
       return State.PLAN_NEW_BALLS
     })

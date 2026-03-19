@@ -5,11 +5,11 @@ import { Dialogs } from './dialogs'
 import { Gameplay } from './gameplay/gameplay'
 
 function init() {
-  const history = new GameHistory()
-  const runtime = new Runtime(history)
+  const gameHistory = new GameHistory()
+  const runtime = new Runtime(gameHistory)
   const playground = new Playground()
   const dialogs = new Dialogs()
-  const gameplay = new Gameplay(runtime, playground)
+  const gameplay = new Gameplay(runtime, playground, gameHistory)
   gameplay.init()
 }
 

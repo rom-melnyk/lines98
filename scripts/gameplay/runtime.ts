@@ -50,9 +50,6 @@ export class Runtime {
   }
 
   public undo(allCells: Cell[]) {
-    const [fromCell, toCell] = this.history.lastBallMove ?? []
-    if (!fromCell || !toCell) return
-
     // 1. Undo wipe
     this.history.undoWipe()
     this.updateScore(-this.history.lastWipedCells.length)
@@ -67,6 +64,7 @@ export class Runtime {
     this.history.undoPlannedToBalls()
 
     // 4. Undo last ball move
+    const [fromCell, toCell] = this.history.lastBallMove!
     this.moveBall(toCell, fromCell)
     this.history.clearBallMove()
   }
