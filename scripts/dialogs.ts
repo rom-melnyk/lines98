@@ -23,8 +23,20 @@ export class Dialogs {
       this.gameOverDialogHtmlElement,
     ].forEach(dialog => {
       dialog.querySelector('.close').addEventListener('click', () => dialog.close())
-      dialog.addEventListener('click', e => { if (e.target === dialog) dialog.close() })
+      // Close on backdrop click
+      // dialog.addEventListener('click', e => { if (e.target === dialog) dialog.close() })
     });
+  }
+
+  public getDialogElement(dialog: DialogTypes): HTMLDialogElement | null {
+    switch (dialog) {
+      case DialogTypes.HOW_TO: return this.howToDialogHtmlElement
+      case DialogTypes.GAME_OVER: return this.gameOverDialogHtmlElement
+      default: {
+        console.error(`❌ Unknown dialog type "${dialog}"`)
+        return null
+      }
+    }
   }
 
   public open(dialog: DialogTypes) {

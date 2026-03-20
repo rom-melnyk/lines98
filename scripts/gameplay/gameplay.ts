@@ -15,16 +15,30 @@ import {
 import { loadGame, saveGame } from './operations/load-save-operations'
 import { findCellsToWipe } from './utils/line-utils'
 import { GameHistory } from './history'
+import { Dialogs, DialogTypes } from '../dialogs'
 
 export class Gameplay {
+  private readonly runtime: Runtime
+  private readonly playground: Playground
+  private readonly history: GameHistory
+  private readonly dialogs: Dialogs
+
   private readonly fsm = new Fsm()
   private isAnimating = false
 
+  private readonly gameOverScoreElement: HTMLSpanElement
+
   constructor(
-    public readonly runtime: Runtime,
-    public readonly playground: Playground,
-    public readonly history: GameHistory,
+    runtime: Runtime,
+    playground: Playground,
+    history: GameHistory,
+    dialogs: Dialogs,
   ) {
+    this.runtime = runtime
+    this.playground = playground
+    this.history = history
+    this.dialogs = dialogs
+
     this.playground.cells.forEach(cell => {
       cell.getHtmlElement().addEventListener('click', this.createMouseClickHandler(cell))
       cell.getHtmlElement().addEventListener('mouseover', this.createMouseOverHandler(cell))
@@ -35,6 +49,13 @@ export class Gameplay {
     const undoButton = document.querySelector('.stats-panel .undo')
     undoButton.addEventListener('click', () => this.fsm.goTo(State.UNDO))
 
+    this.gameOverScoreElement = this.dialogs
+      .getDialogElement(DialogTypes.GAME_OVER)
+      .querySelector('.score')
+    this.dialogs
+      .getDialogElement(DialogTypes.GAME_OVER)
+      .addEventListener('close', () => this.fsm.goTo(State.NEW_GAME))
+
     this.setupFSM()
   }
 
@@ -43,9 +64,7 @@ export class Gameplay {
     if (wasLoaded) {
       this.fsm.goTo(State.AWAITING_USER_ACTION)
     } else {
-      // Start new game by placing 3 balls
-      this.fsm.goTo(State.PLAN_NEW_BALLS)
-      this.fsm.goTo(State.SETTLE_PLANNED_BALLS)
+      this.fsm.goTo(State.NEW_GAME)
     }
   }
 
@@ -79,7 +98,19 @@ export class Gameplay {
   }
 
   private setupFSM() {
-    this.fsm.registerState(State.GAME_OVER, () => null)
+    this.fsm.registerState(State.NEW_GAME, () => {
+      this.runtime.reset(this.playground.cells)
+
+      // Start new game by placing 3 balls and planning 3 new ones
+      this.fsm.goTo(State.PLAN_NEW_BALLS)
+      return State.SETTLE_PLANNED_BALLS
+    })
+
+    this.fsm.registerState(State.GAME_OVER, () => {
+      this.gameOverScoreElement.innerText = this.runtime.score.toString(10)
+      this.dialogs.open(DialogTypes.GAME_OVER)
+      return null
+    })
 
     this.fsm.registerState(State.PLAN_NEW_BALLS, () => {
       const availableCells = this.playground.cells.filter(cell => !cell.get('ball'))

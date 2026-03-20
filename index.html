@@ -28,7 +28,7 @@
     <div class="credits">&copy; <a href="https://melnyk.site" tabindex="-1">Roman Melnyk</a></div>
   </footer>
 
-  <dialog class="how-to">
+  <dialog class="how-to" closedby="closerequest">
     <h2>How to play</h2>
     <p>
       Select a ball.
@@ -50,11 +50,10 @@
     </div>
   </dialog>
 
-  <dialog class="game-over">
-    <h2>Game over 😐</h2>
+  <dialog class="game-over" closedby="closerequest">
+    <h2>Game over</h2>
     <p>
-      Congratulations!
-      <br/>Your score is <span class="score">00000</span>.
+      Your score is <span class="score">00000</span>.
     </p>
     <div class="footer">
       <button class="close" autofocus aria-label="Close" data-icon="&olarr;" data-text="Restart"></button>

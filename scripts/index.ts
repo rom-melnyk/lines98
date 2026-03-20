@@ -9,7 +9,7 @@ function init() {
   const runtime = new Runtime(gameHistory)
   const playground = new Playground()
   const dialogs = new Dialogs()
-  const gameplay = new Gameplay(runtime, playground, gameHistory)
+  const gameplay = new Gameplay(runtime, playground, gameHistory, dialogs)
   gameplay.init()
 }
 

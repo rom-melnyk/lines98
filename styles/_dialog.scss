@@ -27,4 +27,15 @@ dialog {
     margin-top: 1.5rem;
     text-align: center;
   }
+
+  // ------ Specigic dialogs ------
+  &.game-over {
+    * {
+      text-align: center;
+    }
+  }
+
+  .score {
+    font-weight: bold;
+  }
 }

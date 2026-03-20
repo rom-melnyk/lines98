@@ -77,6 +77,11 @@ export class Cell {
     this.properties[property] = value
   }
 
+  public reset() {
+    Object.keys(this.properties)
+      .forEach(prop => this.set(prop as CellProperties, null))
+  }
+
   public serialize() {
     const coords = `${this.x}:${this.y}`
     const ball = this.get('ball') ? this.get('ball') : ''

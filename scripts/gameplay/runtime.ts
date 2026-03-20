@@ -8,7 +8,7 @@ export class Runtime {
   public trace: Cell[] = []
   public score = 0
 
-  public readonly history: GameHistory
+  private readonly history: GameHistory
 
   private readonly scoreElement: HTMLSpanElement
   constructor(history: GameHistory) {
@@ -32,6 +32,19 @@ export class Runtime {
 
     const score = this.score.toString(10).padStart(5, '0')
     this.scoreElement.innerText = score
+  }
+
+  public reset(allCells: Cell[]) {
+    allCells.forEach(cell => cell.reset())
+
+    this.clicked = null
+    if (this.selected) this.unselectCell(this.selected)
+    this.trace = []
+    this.score = null
+    this.updateScore(0)
+
+    this.history.clearBallMove()
+    this.history.clearWipedCells()
   }
 
   public moveBall(fromCell: Cell, toCell: Cell) {
@@ -67,9 +80,6 @@ export class Runtime {
     const [fromCell, toCell] = this.history.lastBallMove!
     this.moveBall(toCell, fromCell)
     this.history.clearBallMove()
-  }
-
-  public undoWipe() {
   }
 
   public unselectCell(cell: Cell) {

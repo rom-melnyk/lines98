@@ -1,4 +1,5 @@
 export enum State {
+  NEW_GAME = 'new_game',
   GAME_OVER = 'game_over',
   PLAN_NEW_BALLS = 'plan_new_balls',
   AWAITING_USER_ACTION = 'awaiting_user_action',

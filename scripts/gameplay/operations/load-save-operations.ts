@@ -22,7 +22,7 @@ export function loadGame(allCells: Cell[], runtime: Runtime): boolean {
     })
     return true
   } catch (e) {
-    console.error(e)
+    console.error(`❌ Failed parsing saved game:`, e)
     return false
   }
 }
