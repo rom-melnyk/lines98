@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <!-- Ball gradients: ellipse at 35% 35%, lightness +30% → base → lightness -20% -->
+
+    <!-- Ball 1: hsl(40, 80%, 60%) orange -->
+    <radialGradient id="b1" cx="35%" cy="35%" r="65%" fx="35%" fy="35%">
+      <stop offset="0%"   stop-color="hsl(40, 80%, 90%)"/>
+      <stop offset="30%"  stop-color="hsl(40, 80%, 60%)"/>
+      <stop offset="100%" stop-color="hsl(40, 80%, 40%)"/>
+    </radialGradient>
+
+    <!-- Ball 2: hsl(130, 80%, 60%) green -->
+    <radialGradient id="b2" cx="35%" cy="35%" r="65%" fx="35%" fy="35%">
+      <stop offset="0%"   stop-color="hsl(130, 80%, 90%)"/>
+      <stop offset="30%"  stop-color="hsl(130, 80%, 60%)"/>
+      <stop offset="100%" stop-color="hsl(130, 80%, 40%)"/>
+    </radialGradient>
+
+    <!-- Ball 3: hsl(200, 80%, 60%) blue -->
+    <radialGradient id="b3" cx="35%" cy="35%" r="65%" fx="35%" fy="35%">
+      <stop offset="0%"   stop-color="hsl(200, 80%, 90%)"/>
+      <stop offset="30%"  stop-color="hsl(200, 80%, 60%)"/>
+      <stop offset="100%" stop-color="hsl(200, 80%, 40%)"/>
+    </radialGradient>
+
+    <!-- Ball 4: hsl(260, 80%, 60%) purple -->
+    <radialGradient id="b4" cx="35%" cy="35%" r="65%" fx="35%" fy="35%">
+      <stop offset="0%"   stop-color="hsl(260, 80%, 90%)"/>
+      <stop offset="30%"  stop-color="hsl(260, 80%, 60%)"/>
+      <stop offset="100%" stop-color="hsl(260, 80%, 40%)"/>
+    </radialGradient>
+
+    <!-- Ball 5: hsl(340, 80%, 60%) pink -->
+    <radialGradient id="b5" cx="35%" cy="35%" r="65%" fx="35%" fy="35%">
+      <stop offset="0%"   stop-color="hsl(340, 80%, 90%)"/>
+      <stop offset="30%"  stop-color="hsl(340, 80%, 60%)"/>
+      <stop offset="100%" stop-color="hsl(340, 80%, 40%)"/>
+    </radialGradient>
+  </defs>
+
+  <!--
+    Glider pattern (SE-moving):
+      . X .   row 0
+      . . X   row 1
+      X X X   row 2
+
+    3×3 grid, cell radius=18, gap=8
+    Total: 3×36 + 2×8 = 124 → start=2, centers at 20, 64, 108
+  -->
+
+  <!-- (col=1, row=0): orange -->
+  <circle cx="64" cy="20" r="18" fill="url(#b1)"/>
+
+  <!-- (col=2, row=1): green -->
+  <circle cx="108" cy="64" r="18" fill="url(#b2)"/>
+
+  <!-- (col=0, row=2): blue -->
+  <circle cx="20" cy="108" r="18" fill="url(#b3)"/>
+
+  <!-- (col=1, row=2): purple -->
+  <circle cx="64" cy="108" r="18" fill="url(#b4)"/>
+
+  <!-- (col=2, row=2): pink -->
+  <circle cx="108" cy="108" r="18" fill="url(#b5)"/>
+</svg>
